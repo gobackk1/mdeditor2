@@ -6,8 +6,8 @@ import { INoteStore } from './note'
 Vue.use(Vuex)
 
 export interface IRootState {
-	user: IUserStore,
-	note: INoteStore
+  user: IUserStore,
+  note: INoteStore
 }
 
 export default new Vuex.Store<IRootState>({})
