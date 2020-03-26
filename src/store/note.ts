@@ -3,6 +3,7 @@ import store from "@/store/store";
 import firebase, { firestore } from 'firebase'
 import userStore from '@/store/user'
 import Vue from 'vue'
+import * as util from '@/util'
 
 export interface INoteStore {
 	// TODO: loginUserの型定義
@@ -74,10 +75,14 @@ class Note extends VuexModule implements INoteStore {
 		this.notes.splice(index, 1)
 	}
 
-	@Mutation DELETE_CATEGORY(category: any): void {
-		const index = this.categories.findIndex(c => c.id === category.id)
+	@Mutation DELETE_CATEGORY(categoryId: string): void {
+		const index = this.categories.findIndex(c => c.id === categoryId)
 		this.categories.splice(index, 1)
-		console.log(index)
+		this.notes.forEach((note, index) => {
+			if (note.categoryId === categoryId) {
+				this.notes.splice(index, 1)
+			}
+		})
 	}
 
 	@Action({}) async addCategory(category: any): Promise<void> {
@@ -91,12 +96,9 @@ class Note extends VuexModule implements INoteStore {
 		this.ADD_CATEGORY({ id: snapshot.id, ...category })
 	}
 
-	@Action({rawError:true}) async deleteCategory(category: any): Promise<void> {
-		await firebase.firestore()
-			.collection(`users/${userStore.uid}/categories`)
-			.doc(category.id).delete()
-
-		this.DELETE_CATEGORY(category)
+	@Action({rawError: true}) async deleteCategory(categoryId: string): Promise<void> {
+		await util.deleteAtPath(`users/${userStore.uid}/categories/${categoryId}`)
+		this.DELETE_CATEGORY(categoryId)
 	}
 
 	@Action({}) async addNote({categoryId, note}: any): Promise<void> {

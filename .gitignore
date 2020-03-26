@@ -21,4 +21,6 @@ yarn-error.log*
 *.sw?
 
 firestore.rules
-strage.rules
+storage.rules
+functions/firebase-debug.log
+functions/lib/index.js.map
