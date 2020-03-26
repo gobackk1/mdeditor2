@@ -1,0 +1,15 @@
+%l-container{
+	width: 1000px;
+	max-width: 98%;
+	margin: auto;
+}
+
+@mixin l-app-content(){
+	height: 100%;
+	&__inner{
+		@extend %l-container;
+		height: 100%;
+		padding: 30px;
+		background: #fff;
+	}
+}
