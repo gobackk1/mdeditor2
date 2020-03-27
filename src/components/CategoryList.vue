@@ -1,6 +1,5 @@
 <template>
   <div>
-    <button @click="aaa">test</button>
     <div class="category-list">
       <div class="category-list__default">
         <ul id="list-default">
@@ -45,16 +44,19 @@ export default class CategoryList extends Vue {
       id: 'all',
       title: '全てのノート',
       deletable: false,
+      renamable: false,
     },
     {
       id: 'star',
       title: 'お気に入り',
       deletable: false,
+      renamable: false,
     },
     {
       id: 'trash',
       title: 'ゴミ箱',
       deletable: true,
+      renamable: false,
     },
   ]
 
@@ -70,22 +72,9 @@ export default class CategoryList extends Vue {
     if (!title) return
 
     const deletable = true
+    const renamable = true
     // TODO: categoryのインターフェース
-    noteStore.addCategory({ title, deletable })
-  }
-
-  async aaa(): Promise<void> {
-    // const hello = firebase.functions().httpsCallable('helloWorld')
-    // hello()
-    // 	.then(res => console.log(res))
-    // 	.catch(e => console.log(e))
-    // const hello = firebase.app().functions('asia-northeast1').httpsCallable('yeah')
-    // hello('a')
-    // 	.then(res => console.log(res))
-    // 	.catch(e => console.log(e))
-    await noteStore.deleteCategory(this.$route.params.categoryId)
-    const defaultList = document.getElementById('list-default')
-    this.$router.push({ name: 'Editor', params: { categoryId: 'all' } })
+    noteStore.addCategory({ title, deletable, renamable })
   }
 }
 </script>

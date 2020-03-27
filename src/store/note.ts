@@ -6,11 +6,11 @@ import {
   getModule,
   Module,
 } from 'vuex-module-decorators'
-import store from '@/store/store'
 import firebase, { firestore } from 'firebase'
 import userStore from '@/store/user'
-import Vue from 'vue'
+import store from '@/store/store'
 import * as util from '@/util'
+import Vue from 'vue'
 
 export interface INoteStore {
   // TODO: loginUserの型定義
@@ -88,6 +88,11 @@ class Note extends VuexModule implements INoteStore {
     this.notes.splice(index, 1)
   }
 
+  @Mutation UPDATE_CATEGORY(category: any): void {
+    const index = this.categories.findIndex(c => c.id === category.id)
+    Vue.set(this.categories, index, category)
+  }
+
   @Mutation DELETE_CATEGORY(categoryId: string): void {
     const index = this.categories.findIndex(c => c.id === categoryId)
     this.categories.splice(index, 1)
@@ -109,9 +114,43 @@ class Note extends VuexModule implements INoteStore {
     this.ADD_CATEGORY({ id: snapshot.id, ...category })
   }
 
+  @Action({}) async updateCategory(category: any): Promise<void> {
+    const documentRef = await firebase
+      .firestore()
+      .collection(`users/${userStore.uid}/categories`)
+      .doc(category.id)
+
+    documentRef.set(
+      {
+        title: category.title,
+      },
+      { merge: true }
+    )
+
+    this.UPDATE_CATEGORY(category)
+  }
+
   @Action({ rawError: true }) async deleteCategory(categoryId: string): Promise<void> {
     await util.deleteAtPath(`users/${userStore.uid}/categories/${categoryId}`)
     this.DELETE_CATEGORY(categoryId)
+  }
+
+  @Action({ rawError: true }) async deleteTrash(): Promise<void> {
+    const notes = await firebase
+      .firestore()
+      .collectionGroup('notes')
+      .where('isTrash', '==', true)
+      .get()
+
+    notes.forEach(doc => {
+      firebase
+        .firestore()
+        .collection(`users/${userStore.uid}/categories/${doc.data().ref.id}/notes`)
+        .doc(doc.id)
+        .delete()
+
+      this.DELETE_NOTE(doc.data())
+    })
   }
 
   @Action({}) async addNote({ categoryId, note }: any): Promise<void> {
@@ -192,8 +231,6 @@ class Note extends VuexModule implements INoteStore {
   }
 
   @Action async deleteNote(note: any): Promise<void> {
-    if (!userStore.uid) return
-
     const snapshot = await firebase
       .firestore()
       .collection(`users/${userStore.uid}/categories/${note.categoryId}/notes`)
