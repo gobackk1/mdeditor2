@@ -47,8 +47,7 @@ export default class EditorStage extends Vue {
 
   created() {
     // eventBus.$on('ready', this.getNote)
-    this.currentNoteId = this.$route.params.noteId;
-    this.note = noteStore.getNoteById(this.currentNoteId);
+    this.getNote();
   }
 
   public getNote(): void {
@@ -57,9 +56,7 @@ export default class EditorStage extends Vue {
   }
 
   public async onClickButton(): Promise<void> {
-    await noteStore.updateNote(this.note);
-    eventBus.$emit("noteUpdated");
-    this.getNote();
+    await this.updateNote();
   }
 
   public async onClickDeleteButton(): Promise<void> {
@@ -73,9 +70,7 @@ export default class EditorStage extends Vue {
 
   public async onClickStarButton(): Promise<void> {
     this.note.isFavorite = !this.note.isFavorite;
-    await noteStore.updateNote(this.note);
-    this.getNote();
-    eventBus.$emit("noteUpdated");
+    await this.updateNote();
   }
 
   public async onClickTrashButton(): Promise<void> {
@@ -83,10 +78,15 @@ export default class EditorStage extends Vue {
       alert("お気に入り登録したノートはゴミ箱へ移動できません");
       return;
     }
+
     this.note.isTrash = !this.note.isTrash;
+    await this.updateNote();
+  }
+
+  public async updateNote(): Promise<void> {
     await noteStore.updateNote(this.note);
-    this.getNote();
     eventBus.$emit("noteUpdated");
+    this.getNote();
   }
 }
 </script>
