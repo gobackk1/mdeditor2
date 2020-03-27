@@ -25,53 +25,53 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import CategoryListItem from "@/components/CategoryListItem.vue";
-import noteStore from "@/store/note";
-import userStore from "@/store/user";
-import eventBus from "@/eventBus";
-import firebase from "firebase";
+import { Component, Vue } from 'vue-property-decorator'
+import CategoryListItem from '@/components/CategoryListItem.vue'
+import noteStore from '@/store/note'
+import userStore from '@/store/user'
+import eventBus from '@/eventBus'
+import firebase from 'firebase'
 
 @Component({
   components: {
-    CategoryListItem
-  }
+    CategoryListItem,
+  },
 })
 export default class CategoryList extends Vue {
-  public categories: any = [];
-  public starCounter: number = 0;
+  public categories: any = []
+  public starCounter: number = 0
   public readonly defaultCategory: any = [
     {
-      id: "all",
-      title: "全てのノート",
-      deletable: false
+      id: 'all',
+      title: '全てのノート',
+      deletable: false,
     },
     {
-      id: "star",
-      title: "お気に入り",
-      deletable: false
+      id: 'star',
+      title: 'お気に入り',
+      deletable: false,
     },
     {
-      id: "trash",
-      title: "ゴミ箱",
-      deletable: true
-    }
-  ];
+      id: 'trash',
+      title: 'ゴミ箱',
+      deletable: true,
+    },
+  ]
 
   created() {
-    this.categories = this.$store.state.note.categories;
-    eventBus.$on("noteUpdated", () => {
-      this.starCounter = this.$store.state.note.notes;
-    });
+    this.categories = this.$store.state.note.categories
+    eventBus.$on('noteUpdated', () => {
+      this.starCounter = this.$store.state.note.notes
+    })
   }
 
   public onClickButton(): void {
-    const title = prompt("カテゴリ名を入力してください");
-    if (!title) return;
+    const title = prompt('カテゴリ名を入力してください')
+    if (!title) return
 
-    const deletable = true;
+    const deletable = true
     // TODO: categoryのインターフェース
-    noteStore.addCategory({ title, deletable });
+    noteStore.addCategory({ title, deletable })
   }
 
   async aaa(): Promise<void> {
@@ -83,9 +83,9 @@ export default class CategoryList extends Vue {
     // hello('a')
     // 	.then(res => console.log(res))
     // 	.catch(e => console.log(e))
-    await noteStore.deleteCategory(this.$route.params.categoryId);
-    const defaultList = document.getElementById("list-default");
-    this.$router.push({ name: "Editor", params: { categoryId: "all" } });
+    await noteStore.deleteCategory(this.$route.params.categoryId)
+    const defaultList = document.getElementById('list-default')
+    this.$router.push({ name: 'Editor', params: { categoryId: 'all' } })
   }
 }
 </script>

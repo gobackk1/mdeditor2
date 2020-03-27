@@ -27,7 +27,9 @@
               <img :src="photoURL" alt="ユーザーのプロフィール画像" />
             </li>
             <li class="menu-list__item" v-if="isLogin">
-              <button class="button--logout" @click="onClickLogout" type="button">ログアウト</button>
+              <button class="button--logout" @click="onClickLogout" type="button">
+                ログアウト
+              </button>
             </li>
           </ul>
         </nav>
@@ -38,38 +40,38 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import userStore from "@/store/user";
-import firebase from "firebase";
+import { Vue, Component } from 'vue-property-decorator'
+import userStore from '@/store/user'
+import firebase from 'firebase'
 
 @Component({})
 export default class AppHeader extends Vue {
-  loaded: boolean = false;
+  loaded: boolean = false
 
   created() {
     firebase.auth().onAuthStateChanged(user => {
-      this.loaded = true;
-    });
+      this.loaded = true
+    })
   }
 
   get isLogin(): boolean {
-    return userStore.isLogin;
+    return userStore.isLogin
   }
 
   get userName(): string {
-    return userStore.userName;
+    return userStore.userName
   }
 
   get photoURL(): string {
-    return userStore.photoURL;
+    return userStore.photoURL
   }
 
   onClickLogin(): void {
-    userStore.login();
+    userStore.login()
   }
 
   onClickLogout(): void {
-    firebase.auth().signOut();
+    firebase.auth().signOut()
   }
 }
 </script>

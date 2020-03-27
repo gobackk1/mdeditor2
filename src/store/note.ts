@@ -1,5 +1,12 @@
-import { Mutation, MutationAction, Action, VuexModule, getModule, Module } from "vuex-module-decorators";
-import store from "@/store/store";
+import {
+  Mutation,
+  MutationAction,
+  Action,
+  VuexModule,
+  getModule,
+  Module,
+} from 'vuex-module-decorators'
+import store from '@/store/store'
 import firebase, { firestore } from 'firebase'
 import userStore from '@/store/user'
 import Vue from 'vue'
@@ -7,21 +14,25 @@ import * as util from '@/util'
 
 export interface INoteStore {
   // TODO: loginUserの型定義
-  notes: any;
+  notes: any
 }
 
 @Module({ dynamic: true, store, name: 'note', namespaced: true })
 class Note extends VuexModule implements INoteStore {
-  notes: any[] = [];
+  notes: any[] = []
   categories: any[] = []
 
   get getNotesByCategoryId(): (categoryId: string) => any {
     return categoryId => {
       switch (categoryId) {
-        case 'all': return this.notes.filter(note => note.isTrash === false)
-        case 'star': return this.notes.filter(note => note.isFavorite === true)
-        case 'trash': return this.notes.filter(note => note.isTrash === true)
-        default: return this.notes.filter(note => note.categoryId === categoryId && !note.isTrash)
+        case 'all':
+          return this.notes.filter(note => note.isTrash === false)
+        case 'star':
+          return this.notes.filter(note => note.isFavorite === true)
+        case 'trash':
+          return this.notes.filter(note => note.isTrash === true)
+        default:
+          return this.notes.filter(note => note.categoryId === categoryId && !note.isTrash)
       }
     }
   }
@@ -45,10 +56,14 @@ class Note extends VuexModule implements INoteStore {
   get counterByCategoryId(): (categoryId: string) => number {
     return categoryId => {
       switch (categoryId) {
-        case 'all': return this.notes.filter(note => note.isTrash === false).length
-        case 'star': return this.notes.filter(note => note.isFavorite === true).length
-        case 'trash': return this.notes.filter(note => note.isTrash === true).length
-        default: return this.notes.filter(note => note.categoryId === categoryId && !note.isTrash).length
+        case 'all':
+          return this.notes.filter(note => note.isTrash === false).length
+        case 'star':
+          return this.notes.filter(note => note.isFavorite === true).length
+        case 'trash':
+          return this.notes.filter(note => note.isTrash === true).length
+        default:
+          return this.notes.filter(note => note.categoryId === categoryId && !note.isTrash).length
       }
     }
   }
@@ -62,12 +77,10 @@ class Note extends VuexModule implements INoteStore {
   }
 
   @Mutation UPDATE_NOTE(note: any): void {
-
     const index = this.notes.findIndex(n => n.id === note.id)
     Vue.set(this.notes, index, note)
     // this.notes[index] = note
-    console.log(this.notes[index], 'UPDATE');
-
+    console.log(this.notes[index], 'UPDATE')
   }
 
   @Mutation DELETE_NOTE(note: any): void {
@@ -127,7 +140,8 @@ class Note extends VuexModule implements INoteStore {
           !(snapshot.data() as any).updatedAt ||
           !(snapshot.data() as any).createdAt ||
           !snapshot.exists
-        ) return
+        )
+          return
 
         this.ADD_NOTE({
           id: documentRef.id,
@@ -152,23 +166,23 @@ class Note extends VuexModule implements INoteStore {
       .doc(note.id)
     // .update({ title: note.title })
 
-    documentRef.set({
-      title: note.title,
-      isFavorite: note.isFavorite,
-      isTrash: note.isTrash,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    }, { merge: true })
+    documentRef.set(
+      {
+        title: note.title,
+        isFavorite: note.isFavorite,
+        isTrash: note.isTrash,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    )
 
     return new Promise(resolve => {
       const unstamped = documentRef.onSnapshot(snapshot => {
-        if (
-          !(snapshot.data() as any).updatedAt ||
-          !snapshot.exists
-        ) return
+        if (!(snapshot.data() as any).updatedAt || !snapshot.exists) return
 
         this.UPDATE_NOTE({
           ...note,
-          updatedAt: (snapshot.data() as any).updatedAt
+          updatedAt: (snapshot.data() as any).updatedAt,
         })
 
         unstamped()
@@ -205,7 +219,7 @@ class Note extends VuexModule implements INoteStore {
       .get()
 
     snapshot.forEach(doc => {
-      console.log(doc.data());
+      console.log(doc.data())
 
       this.ADD_NOTE({
         id: doc.id,
@@ -220,4 +234,4 @@ class Note extends VuexModule implements INoteStore {
   }
 }
 
-export default getModule(Note);
+export default getModule(Note)

@@ -1,15 +1,22 @@
-import { Mutation, MutationAction, Action, VuexModule, getModule, Module } from "vuex-module-decorators";
-import store from "@/store/store";
+import {
+  Mutation,
+  MutationAction,
+  Action,
+  VuexModule,
+  getModule,
+  Module,
+} from 'vuex-module-decorators'
+import store from '@/store/store'
 import firebase from 'firebase'
 
 export interface IUserStore {
   // TODO: loginUserの型定義
-  loginUser: any;
+  loginUser: any
 }
 
 @Module({ dynamic: true, store, name: 'user', namespaced: true })
 class User extends VuexModule implements IUserStore {
-  loginUser: any = null;
+  loginUser: any = null
 
   get isLogin(): boolean {
     return !!this.loginUser
@@ -63,4 +70,4 @@ class User extends VuexModule implements IUserStore {
   // }
 }
 
-export default getModule(User);
+export default getModule(User)
