@@ -3,9 +3,7 @@
     <header class="app__header">
       <AppHeader></AppHeader>
     </header>
-    <div class="app__content">
-      <RouterView :scrollTop="appContentScrollTop"></RouterView>
-    </div>
+    <RouterView class="app__content"></RouterView>
   </div>
 </template>
 
@@ -24,18 +22,6 @@ import firebase from 'firebase'
   },
 })
 export default class App extends Vue {
-  public appContentScrollTop: number = 0
-
-  mounted() {
-    const appContent = document.querySelector('.app__content')
-    if (!appContent) return
-
-    appContent.addEventListener('scroll', () => {
-      if (this.$route.name !== 'Home') return
-      this.onScrollHome(appContent)
-    })
-  }
-
   created() {
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
@@ -52,10 +38,6 @@ export default class App extends Vue {
         userStore.deleteLoginUser()
       }
     })
-  }
-
-  onScrollHome(appContent: Element): void {
-    this.appContentScrollTop = appContent.scrollTop
   }
 }
 </script>

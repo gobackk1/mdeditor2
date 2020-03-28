@@ -1,16 +1,18 @@
 <template>
-  <div class="home">
-    <div class="home__hero"></div>
-    <div class="home__inner markdown-body">
-      <h2>このアプリは何？</h2>
-      <p>ブラウザ上で動作するマークダウンエディタです。ここにソースコードはる</p>
-      <h2>使ったものたち</h2>
-      <p>
-        HTML / SASS / TypeScript / Vue / vue-cli /Jest / Webpack / Firebase Authentication /
-        Firestore / VSCode / Adobe XD
-      </p>
-      <h2>作業時間</h2>
-      <p>準備中</p>
+  <div class="wrapper">
+    <div class="home">
+      <div class="home__hero"></div>
+      <div class="home__inner markdown-body">
+        <h2>このアプリは何？</h2>
+        <p>ブラウザ上で動作するマークダウンエディタです。ここにソースコードはる</p>
+        <h2>使ったものたち</h2>
+        <p>
+          HTML / SASS / TypeScript / Vue / vue-cli /Jest / Webpack / Firebase Authentication /
+          Firestore / VSCode / Adobe XD
+        </p>
+        <h2>作業時間</h2>
+        <p>準備中</p>
+      </div>
     </div>
   </div>
 </template>
@@ -20,30 +22,32 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class Home extends Vue {
-  /**
-   * 高さぴったりまで変形させるとがたつくため
-   */
-  parallaxThreshould!: number
+  public wrapper!: Element | null
+  public homeInner!: Element | null
+  // スクロールしきるとがたつくため
+  public threshould!: number
 
-  @Prop({})
-  public scrollTop?: number
-
-  @Watch('scrollTop')
-  parallaxHomeInner(scrollTop: number): void {
-    const homeInner = document.querySelector('.home__inner')
-    if (!homeInner) return
-    if (scrollTop > this.parallaxThreshould) return
-    ;(homeInner as HTMLElement).style.transform = `translateY(${-scrollTop}px)`
-  }
-
-  created() {
-    console.log(this)
-  }
+  created() {}
 
   mounted() {
     const homeHero = document.querySelector('.home__hero')
-    const threshould = (homeHero as HTMLElement).offsetHeight / 2 - 5
-    this.parallaxThreshould = threshould
+    this.homeInner = document.querySelector('.home__inner')
+    this.wrapper = document.querySelector('.wrapper')
+    this.threshould = (homeHero as HTMLElement).offsetHeight / 2 - 5
+
+    if (!this.wrapper) return
+    this.wrapper.addEventListener('scroll', this.onScrollWrapper)
+  }
+
+  beforeDestroy() {
+    if (!this.wrapper) return
+    this.wrapper.removeEventListener('scroll', this.onScrollWrapper)
+  }
+
+  public onScrollWrapper(): void {
+    if (!this.wrapper) return
+    if (this.wrapper.scrollTop > this.threshould) return
+    ;(this.homeInner as HTMLElement).style.transform = `translateY(${-this.wrapper.scrollTop}px)`
   }
 }
 </script>
