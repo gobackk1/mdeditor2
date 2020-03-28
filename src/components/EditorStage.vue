@@ -5,6 +5,7 @@
     </div>
     <div class="editor__stage stage" v-if="note">
       <div class="stage__body">
+        {{ categoryTitle }}
         {{ note }}
       </div>
       <button @click="onClickButton">保存</button>
@@ -13,7 +14,7 @@
       <button @click="onClickTrashButton">{{ note.isTrash ? '●' : '○' }}</button>
       <textarea
         v-if="note"
-        v-model="note.title"
+        v-model="note.body"
         class="stage__textarea"
         cols="30"
         rows="10"
@@ -25,6 +26,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import EditorToolbar from '@/components/EditorToolbar.vue'
+import categoryStore from '@/store/category'
 import noteStore from '@/store/note'
 import eventBus from '@/eventBus'
 import Note from '@/interface/Note'
@@ -45,6 +47,10 @@ export default class EditorStage extends Vue {
   created() {
     // eventBus.$on('ready', this.fetchNote)
     this.fetchNote()
+  }
+
+  public get categoryTitle(): string {
+    return this.note ? categoryStore.getTitleById(this.note.categoryId) : ''
   }
 
   public fetchNote(): void {

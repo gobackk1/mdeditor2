@@ -21,6 +21,13 @@ export interface ICategoryStore {
 class CategoryStore extends VuexModule implements ICategoryStore {
   categories: Category[] = []
 
+  public get getTitleById(): (categoryId: string) => string {
+    return categoryId => {
+      const category = this.categories.find(category => category.id === categoryId)
+      return category ? category.title : ''
+    }
+  }
+
   @Mutation ADD_CATEGORY(category: Category): void {
     this.categories.push(category)
   }

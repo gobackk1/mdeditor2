@@ -162,7 +162,7 @@ class NoteStore extends VuexModule implements INoteStore {
 
     documentRef.set(
       {
-        title: note.title,
+        body: note.body,
         isFavorite: note.isFavorite,
         isTrash: note.isTrash,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -208,6 +208,7 @@ class NoteStore extends VuexModule implements INoteStore {
         id: doc.id,
         categoryId: doc.data().ref.id,
         title: doc.data().title,
+        body: doc.data().body,
         isFavorite: doc.data().isFavorite,
         isTrash: doc.data().isTrash,
         createdAt: doc.data().createdAt,

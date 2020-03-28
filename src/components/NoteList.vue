@@ -1,7 +1,7 @@
 <template>
   <div class="note-list">
     <div class="note-list__search">
-      <input type="text" />
+      <input type="text" v-model="searchText" placeholder="検索" />
     </div>
     <div class="note-list__tool tool">
       <div class="tool__sort">
@@ -16,21 +16,21 @@
     </div>
     <div class="note-list__stage">
       <ul>
-        <li v-for="item in sortedNotes" :key="item.id">
+        <li v-for="note in processedNotes" :key="note.id">
           <RouterLink
             :to="{
               name: 'Editor',
               params: {
-                categoryId: $route.params.categoryId,
-                noteId: item.id,
+                categoryId: note.categoryId,
+                noteId: note.id,
               },
             }"
           >
-            <NoteListItem>{{ item.title }}</NoteListItem>
+            <NoteListItem>{{ note.title }}</NoteListItem>
           </RouterLink>
         </li>
       </ul>
-      <pre>{{ sortedNotes }}</pre>
+      <pre>{{ processedNotes }}</pre>
     </div>
   </div>
 </template>
@@ -50,13 +50,15 @@ import Note from '@/interface/Note'
   },
 })
 export default class NoteList extends Vue {
-  public notes: Note[] = []
+  public searchText: string = ''
   public orderby: string = 'createdAt'
+  public notes: Note[] = []
   public dummyNotes: any[] = [
     {
       id: 'note1',
       categoryId: 'dummy',
       title: 'note1',
+      body: 'note1 body',
       isFavorite: false,
       isTrash: false,
       pinned: STATUS.NORMAL,
@@ -73,6 +75,7 @@ export default class NoteList extends Vue {
       id: 'note2',
       categoryId: 'dummy',
       title: 'note2',
+      body: 'note2 body',
       isFavorite: true,
       isTrash: false,
       pinned: STATUS.PINNED,
@@ -89,6 +92,7 @@ export default class NoteList extends Vue {
       id: 'note3',
       categoryId: 'dummy',
       title: 'note3',
+      body: 'note3 body',
       isFavorite: false,
       isTrash: false,
       pinned: STATUS.NORMAL,
@@ -103,8 +107,8 @@ export default class NoteList extends Vue {
     },
   ]
 
-  public get sortedNotes(): Note[] {
-    return this.notes.sort((a, b) => {
+  public get processedNotes(): Note[] {
+    const sortedNotes = this.notes.sort((a, b) => {
       switch (this.orderby) {
         case 'updatedAt':
           return b.updatedAt.seconds - a.updatedAt.seconds
@@ -114,6 +118,9 @@ export default class NoteList extends Vue {
         // return b.pinned - a.pinned || b.createdAt.seconds - a.createdAt.seconds
       }
     })
+
+    if (this.searchText === '') return sortedNotes
+    return sortedNotes.filter(note => RegExp(this.searchText).test(note.body))
   }
 
   @Watch('$route')
@@ -140,6 +147,7 @@ export default class NoteList extends Vue {
       id: '',
       categoryId,
       title,
+      body: '',
       isFavorite: false,
       isTrash: false,
       updatedAt: {

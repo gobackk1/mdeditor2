@@ -8,15 +8,15 @@ module.exports = {
       },
     },
   },
-  configureWebpack: {
-    plugins: [
-      new TypedocWebpackPlugin(
-        {
-          mode: 'file',
-        },
-        './src/'
-      ),
-    ],
-  },
+  // configureWebpack: {
+  //   plugins: [
+  //     new TypedocWebpackPlugin(
+  //       {
+  //         mode: 'file',
+  //       },
+  //       './src/'
+  //     ),
+  //   ],
+  // },
   // publicPath: '/public'
 }
