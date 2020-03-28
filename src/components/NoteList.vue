@@ -5,9 +5,9 @@
     </div>
     <div class="note-list__tool tool">
       <div class="tool__sort">
-        <select name id>
-          <option value>作成日時</option>
-          <option value>更新日時</option>
+        <select name id v-model="orderby">
+          <option value="createdAt">作成日時</option>
+          <option value="updatedAt">更新日時</option>
         </select>
       </div>
       <div class="tool__button">
@@ -16,7 +16,7 @@
     </div>
     <div class="note-list__stage">
       <ul>
-        <li v-for="item in notes" :key="item.id">
+        <li v-for="item in sortedNotes" :key="item.id">
           <RouterLink
             :to="{
               name: 'Editor',
@@ -30,7 +30,7 @@
           </RouterLink>
         </li>
       </ul>
-      <pre>{{ notes }}</pre>
+      <pre>{{ sortedNotes }}</pre>
     </div>
   </div>
 </template>
@@ -41,6 +41,7 @@ import NoteListItem from '@/components/NoteListItem.vue'
 import noteStore from '@/store/note'
 import eventBus from '@/eventBus'
 import firebase from 'firebase'
+import STATUS from '@/enum/STATUS'
 import Note from '@/interface/Note'
 
 @Component({
@@ -50,6 +51,70 @@ import Note from '@/interface/Note'
 })
 export default class NoteList extends Vue {
   public notes: Note[] = []
+  public orderby: string = 'createdAt'
+  public dummyNotes: any[] = [
+    {
+      id: 'note1',
+      categoryId: 'dummy',
+      title: 'note1',
+      isFavorite: false,
+      isTrash: false,
+      pinned: STATUS.NORMAL,
+      createdAt: {
+        seconds: 666,
+        nanoseconds: 666,
+      },
+      updatedAt: {
+        seconds: 666,
+        nanoseconds: 666,
+      },
+    },
+    {
+      id: 'note2',
+      categoryId: 'dummy',
+      title: 'note2',
+      isFavorite: true,
+      isTrash: false,
+      pinned: STATUS.PINNED,
+      createdAt: {
+        seconds: 444,
+        nanoseconds: 444,
+      },
+      updatedAt: {
+        seconds: 444,
+        nanoseconds: 444,
+      },
+    },
+    {
+      id: 'note3',
+      categoryId: 'dummy',
+      title: 'note3',
+      isFavorite: false,
+      isTrash: false,
+      pinned: STATUS.NORMAL,
+      createdAt: {
+        seconds: 555,
+        nanoseconds: 555,
+      },
+      updatedAt: {
+        seconds: 555,
+        nanoseconds: 555,
+      },
+    },
+  ]
+
+  public get sortedNotes(): Note[] {
+    return this.notes.sort((a, b) => {
+      switch (this.orderby) {
+        case 'updatedAt':
+          return b.updatedAt.seconds - a.updatedAt.seconds
+        case 'createdAt':
+        default:
+          return b.createdAt.seconds - a.createdAt.seconds
+        // return b.pinned - a.pinned || b.createdAt.seconds - a.createdAt.seconds
+      }
+    })
+  }
 
   @Watch('$route')
   public route() {

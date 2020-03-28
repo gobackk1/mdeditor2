@@ -24,3 +24,4 @@ firestore.rules
 storage.rules
 functions/firebase-debug.log
 functions/lib/index.js.map
+.firebase
