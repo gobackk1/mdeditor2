@@ -39,8 +39,9 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import NoteListItem from '@/components/NoteListItem.vue'
 import noteStore from '@/store/note'
-import firebase from 'firebase'
 import eventBus from '@/eventBus'
+import firebase from 'firebase'
+import Note from '@/interface/Note'
 
 @Component({
   components: {
@@ -48,24 +49,20 @@ import eventBus from '@/eventBus'
   },
 })
 export default class NoteList extends Vue {
-  public notes: any = []
-  // このプロパティイルカ？
-  private currentCategoryId!: string
+  public notes: Note[] = []
 
   @Watch('$route')
   public route() {
-    this.getNotes()
+    this.fetchNotes()
   }
 
   public created(): void {
-    // this.currentCategoryId = this.$route.params.categoryId
-    // this.notes = noteStore.getNotesByCategoryId(this.currentCategoryId)
     eventBus.$on('noteUpdated', () => {
-      this.getNotes()
+      this.fetchNotes()
     })
   }
 
-  public getNotes(): void {
+  public fetchNotes(): void {
     this.notes = noteStore.getNotesByCategoryId(this.$route.params.categoryId)
   }
 
@@ -74,14 +71,24 @@ export default class NoteList extends Vue {
     if (!title) return
 
     const categoryId = this.$route.params.categoryId
-    const note = {
+    const note: Note = {
+      id: '',
+      categoryId,
       title,
       isFavorite: false,
       isTrash: false,
+      updatedAt: {
+        seconds: 0,
+        nanoseconds: 0,
+      },
+      createdAt: {
+        seconds: 0,
+        nanoseconds: 0,
+      },
     }
 
-    await noteStore.addNote({ categoryId, note })
-    this.getNotes()
+    await noteStore.addNote(note)
+    this.fetchNotes()
   }
 }
 </script>

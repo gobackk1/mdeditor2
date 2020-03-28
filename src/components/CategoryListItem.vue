@@ -13,12 +13,14 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import categoryStore from '@/store/category'
+import Category from '@/interface/Category'
 import noteStore from '@/store/note'
 
 @Component({})
 export default class CategoryListItem extends Vue {
   @Prop({})
-  public category!: any
+  public category!: Category
 
   public counter(categoryId: string): number {
     return noteStore.counterByCategoryId(categoryId)
@@ -31,7 +33,8 @@ export default class CategoryListItem extends Vue {
     if (categoryId === 'trash') {
       await noteStore.deleteTrash()
     } else {
-      await noteStore.deleteCategory(categoryId)
+      await categoryStore.deleteCategory(categoryId)
+      categoryStore.deleteCategory(categoryId)
     }
 
     this.$router.push({ name: 'Editor', params: { categoryId: 'all' } })
@@ -42,7 +45,7 @@ export default class CategoryListItem extends Vue {
     if (!title) return
 
     this.category.title = title
-    noteStore.updateCategory(this.category)
+    categoryStore.updateCategory(this.category)
   }
 }
 </script>

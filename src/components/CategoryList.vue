@@ -26,8 +26,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import CategoryListItem from '@/components/CategoryListItem.vue'
-import noteStore from '@/store/note'
+import categoryStore from '@/store/category'
 import userStore from '@/store/user'
+import Category from '@/interface/Category'
 import eventBus from '@/eventBus'
 import firebase from 'firebase'
 
@@ -37,9 +38,9 @@ import firebase from 'firebase'
   },
 })
 export default class CategoryList extends Vue {
-  public categories: any = []
+  public categories: Category[] = []
   public starCounter: number = 0
-  public readonly defaultCategory: any = [
+  public readonly defaultCategory: Category[] = [
     {
       id: 'all',
       title: '全てのノート',
@@ -61,20 +62,22 @@ export default class CategoryList extends Vue {
   ]
 
   created() {
-    this.categories = this.$store.state.note.categories
-    eventBus.$on('noteUpdated', () => {
-      this.starCounter = this.$store.state.note.notes
-    })
+    this.categories = this.$store.state.CategoryStore.categories
+    eventBus.$on('noteUpdated', () => {})
   }
 
   public onClickButton(): void {
-    const title = prompt('カテゴリ名を入力してください')
+    const title: string | null = prompt('カテゴリ名を入力してください')
     if (!title) return
 
-    const deletable = true
-    const renamable = true
-    // TODO: categoryのインターフェース
-    noteStore.addCategory({ title, deletable, renamable })
+    const category: Category = {
+      id: '',
+      title,
+      deletable: true,
+      renamable: true,
+    }
+
+    categoryStore.addCategory(category)
   }
 }
 </script>

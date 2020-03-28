@@ -36,6 +36,10 @@ export default class Home extends Vue {
     ;(homeInner as HTMLElement).style.transform = `translateY(${-scrollTop}px)`
   }
 
+  created() {
+    console.log(this)
+  }
+
   mounted() {
     const homeHero = document.querySelector('.home__hero')
     const threshould = (homeHero as HTMLElement).offsetHeight / 2 - 5

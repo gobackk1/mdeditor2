@@ -3,10 +3,9 @@
     <div class="editor__tool">
       <EditorToolbar></EditorToolbar>
     </div>
-    <div class="editor__stage stage">
+    <div class="editor__stage stage" v-if="note">
       <div class="stage__body">
         {{ note }}
-        {{ currentNoteId }}
       </div>
       <button @click="onClickButton">保存</button>
       <button @click="onClickDeleteButton">削除</button>
@@ -28,6 +27,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import EditorToolbar from '@/components/EditorToolbar.vue'
 import noteStore from '@/store/note'
 import eventBus from '@/eventBus'
+import Note from '@/interface/Note'
 
 @Component({
   components: {
@@ -35,22 +35,21 @@ import eventBus from '@/eventBus'
   },
 })
 export default class EditorStage extends Vue {
-  public note: any = {}
-  private currentNoteId: string = ''
+  public note: Note | null = null
 
   @Watch('$route')
   route() {
-    this.getNote()
+    this.fetchNote()
   }
 
   created() {
-    // eventBus.$on('ready', this.getNote)
-    this.getNote()
+    // eventBus.$on('ready', this.fetchNote)
+    this.fetchNote()
   }
 
-  public getNote(): void {
-    this.currentNoteId = this.$route.params.noteId
-    this.note = noteStore.getNoteById(this.currentNoteId)
+  public fetchNote(): void {
+    const note = noteStore.getNoteById(this.$route.params.noteId)
+    note ? (this.note = note) : (this.note = null)
   }
 
   public async onClickButton(): Promise<void> {
@@ -58,6 +57,8 @@ export default class EditorStage extends Vue {
   }
 
   public async onClickDeleteButton(): Promise<void> {
+    if (!this.note) return
+
     await noteStore.deleteNote(this.note)
     this.note = null
     this.$router.push({
@@ -67,11 +68,15 @@ export default class EditorStage extends Vue {
   }
 
   public async onClickStarButton(): Promise<void> {
+    if (!this.note) return
+
     this.note.isFavorite = !this.note.isFavorite
     await this.updateNote()
   }
 
   public async onClickTrashButton(): Promise<void> {
+    if (!this.note) return
+
     if (this.note.isFavorite) {
       alert('お気に入り登録したノートはゴミ箱へ移動できません')
       return
@@ -82,9 +87,11 @@ export default class EditorStage extends Vue {
   }
 
   public async updateNote(): Promise<void> {
+    if (!this.note) return
+
     await noteStore.updateNote(this.note)
     eventBus.$emit('noteUpdated')
-    this.getNote()
+    this.fetchNote()
   }
 }
 </script>

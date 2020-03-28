@@ -6,23 +6,21 @@ import {
   getModule,
   Module,
 } from 'vuex-module-decorators'
-import firebase, { firestore } from 'firebase'
 import userStore from '@/store/user'
+import Note from '@/interface/Note'
 import store from '@/store/store'
-import * as util from '@/util'
+import firebase from 'firebase'
 import Vue from 'vue'
 
 export interface INoteStore {
-  // TODO: loginUserの型定義
-  notes: any
+  notes: Note[]
 }
 
-@Module({ dynamic: true, store, name: 'note', namespaced: true })
-class Note extends VuexModule implements INoteStore {
-  notes: any[] = []
-  categories: any[] = []
+@Module({ dynamic: true, store, name: 'NoteStore', namespaced: true })
+class NoteStore extends VuexModule implements INoteStore {
+  notes: Note[] = []
 
-  get getNotesByCategoryId(): (categoryId: string) => any {
+  get getNotesByCategoryId(): (categoryId: string) => Note[] {
     return categoryId => {
       switch (categoryId) {
         case 'all':
@@ -37,7 +35,7 @@ class Note extends VuexModule implements INoteStore {
     }
   }
 
-  get getNoteById(): (noteId: string) => any {
+  get getNoteById(): (noteId: string) => Note | undefined {
     return noteId => this.notes.find(note => note.id === noteId)
   }
 
@@ -68,71 +66,28 @@ class Note extends VuexModule implements INoteStore {
     }
   }
 
-  @Mutation ADD_NOTE(note: any): void {
+  @Mutation ADD_NOTE(note: Note): void {
     this.notes.push(note)
   }
 
-  @Mutation ADD_CATEGORY(category: any): void {
-    this.categories.push(category)
-  }
-
-  @Mutation UPDATE_NOTE(note: any): void {
+  @Mutation UPDATE_NOTE(note: Note): void {
     const index = this.notes.findIndex(n => n.id === note.id)
     Vue.set(this.notes, index, note)
     // this.notes[index] = note
     console.log(this.notes[index], 'UPDATE')
   }
 
-  @Mutation DELETE_NOTE(note: any): void {
-    const index = this.notes.findIndex(n => n.id === note.id)
+  @Mutation DELETE_NOTE(noteId: string): void {
+    const index = this.notes.findIndex(n => n.id === noteId)
     this.notes.splice(index, 1)
   }
 
-  @Mutation UPDATE_CATEGORY(category: any): void {
-    const index = this.categories.findIndex(c => c.id === category.id)
-    Vue.set(this.categories, index, category)
-  }
-
   @Mutation DELETE_CATEGORY(categoryId: string): void {
-    const index = this.categories.findIndex(c => c.id === categoryId)
-    this.categories.splice(index, 1)
     this.notes.forEach((note, index) => {
       if (note.categoryId === categoryId) {
         this.notes.splice(index, 1)
       }
     })
-  }
-
-  @Action({}) async addCategory(category: any): Promise<void> {
-    if (!userStore.uid) return
-
-    const snapshot = await firebase
-      .firestore()
-      .collection(`users/${userStore.uid}/categories`)
-      .add(category)
-
-    this.ADD_CATEGORY({ id: snapshot.id, ...category })
-  }
-
-  @Action({}) async updateCategory(category: any): Promise<void> {
-    const documentRef = await firebase
-      .firestore()
-      .collection(`users/${userStore.uid}/categories`)
-      .doc(category.id)
-
-    documentRef.set(
-      {
-        title: category.title,
-      },
-      { merge: true }
-    )
-
-    this.UPDATE_CATEGORY(category)
-  }
-
-  @Action({ rawError: true }) async deleteCategory(categoryId: string): Promise<void> {
-    await util.deleteAtPath(`users/${userStore.uid}/categories/${categoryId}`)
-    this.DELETE_CATEGORY(categoryId)
   }
 
   @Action({ rawError: true }) async deleteTrash(): Promise<void> {
@@ -149,21 +104,21 @@ class Note extends VuexModule implements INoteStore {
         .doc(doc.id)
         .delete()
 
-      this.DELETE_NOTE(doc.data())
+      this.DELETE_NOTE(doc.id)
     })
   }
 
-  @Action({}) async addNote({ categoryId, note }: any): Promise<void> {
+  @Action({}) async addNote(note: Note): Promise<void> {
     if (!userStore.uid) return
 
     const category = await firebase
       .firestore()
-      .doc(`users/${userStore.uid}/categories/${categoryId}`)
+      .doc(`users/${userStore.uid}/categories/${note.categoryId}`)
       .get()
 
     const documentRef = await firebase
       .firestore()
-      .collection(`users/${userStore.uid}/categories/${categoryId}/notes`)
+      .collection(`users/${userStore.uid}/categories/${note.categoryId}/notes`)
       .doc()
 
     documentRef.set({
@@ -183,9 +138,9 @@ class Note extends VuexModule implements INoteStore {
           return
 
         this.ADD_NOTE({
-          id: documentRef.id,
-          categoryId,
           ...note,
+          id: documentRef.id,
+          categoryId: note.categoryId,
           createdAt: (snapshot.data() as any).createdAt,
           updatedAt: (snapshot.data() as any).updatedAt,
         })
@@ -196,7 +151,7 @@ class Note extends VuexModule implements INoteStore {
     })
   }
 
-  @Action async updateNote(note: any): Promise<void> {
+  @Action async updateNote(note: Note): Promise<void> {
     if (!userStore.uid) return
 
     const documentRef = await firebase
@@ -230,23 +185,14 @@ class Note extends VuexModule implements INoteStore {
     })
   }
 
-  @Action async deleteNote(note: any): Promise<void> {
+  @Action async deleteNote(note: Note): Promise<void> {
     const snapshot = await firebase
       .firestore()
       .collection(`users/${userStore.uid}/categories/${note.categoryId}/notes`)
       .doc(note.id)
       .delete()
 
-    this.DELETE_NOTE(note)
-  }
-
-  @Action({ rawError: true }) async fetchCategories(): Promise<void> {
-    const snapshot = await firebase
-      .firestore()
-      .collection(`users/${userStore.uid}/categories`)
-      .get()
-
-    snapshot.forEach(doc => this.ADD_CATEGORY({ id: doc.id, ...doc.data() }))
+    this.DELETE_NOTE(note.id)
   }
 
   @Action({ rawError: true }) async fetchNotes(): Promise<void> {
@@ -258,7 +204,7 @@ class Note extends VuexModule implements INoteStore {
     snapshot.forEach(doc => {
       console.log(doc.data())
 
-      this.ADD_NOTE({
+      const note: Note = {
         id: doc.id,
         categoryId: doc.data().ref.id,
         title: doc.data().title,
@@ -266,9 +212,11 @@ class Note extends VuexModule implements INoteStore {
         isTrash: doc.data().isTrash,
         createdAt: doc.data().createdAt,
         updatedAt: doc.data().updatedAt,
-      })
+      }
+
+      this.ADD_NOTE(note)
     })
   }
 }
 
-export default getModule(Note)
+export default getModule(NoteStore)
