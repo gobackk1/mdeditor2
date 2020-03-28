@@ -158,7 +158,6 @@ class NoteStore extends VuexModule implements INoteStore {
       .firestore()
       .collection(`users/${userStore.uid}/categories/${note.categoryId}/notes`)
       .doc(note.id)
-    // .update({ title: note.title })
 
     documentRef.set(
       {
@@ -207,7 +206,6 @@ class NoteStore extends VuexModule implements INoteStore {
       const note: Note = {
         id: doc.id,
         categoryId: doc.data().ref.id,
-        title: doc.data().title,
         body: doc.data().body,
         isFavorite: doc.data().isFavorite,
         isTrash: doc.data().isTrash,

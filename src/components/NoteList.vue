@@ -26,7 +26,7 @@
               },
             }"
           >
-            <NoteListItem>{{ note.title }}</NoteListItem>
+            <NoteListItem>{{ note.body | title }}</NoteListItem>
           </RouterLink>
         </li>
       </ul>
@@ -47,6 +47,17 @@ import Note from '@/interface/Note'
 @Component({
   components: {
     NoteListItem,
+  },
+  filters: {
+    title(body: string): string {
+      if (/#*\s/.test(body)) {
+        body = body.replace(/#*\s/, '')
+      }
+
+      const hasNewLine = /\r\n|\r|\n/.exec(body)
+      const index = hasNewLine ? hasNewLine.index : 30
+      return body === '' ? 'empty title' : body.slice(0, index)
+    },
   },
 })
 export default class NoteList extends Vue {
@@ -139,14 +150,10 @@ export default class NoteList extends Vue {
   }
 
   public async onClickButton(): Promise<void> {
-    const title = prompt('ノートタイトルを入力してください')
-    if (!title) return
-
     const categoryId = this.$route.params.categoryId
     const note: Note = {
       id: '',
       categoryId,
-      title,
       body: '',
       isFavorite: false,
       isTrash: false,

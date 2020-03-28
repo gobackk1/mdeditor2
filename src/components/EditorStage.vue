@@ -6,7 +6,8 @@
     <div class="editor__stage stage" v-if="note">
       <div class="stage__body">
         {{ categoryTitle }}
-        {{ note }}
+        {{ note.body }}
+        <MarkdownBody :content="note.body"></MarkdownBody>
       </div>
       <button @click="onClickButton">保存</button>
       <button @click="onClickDeleteButton">削除</button>
@@ -27,6 +28,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import EditorToolbar from '@/components/EditorToolbar.vue'
 import categoryStore from '@/store/category'
+import MarkdownBody from '@/components/MarkdownBody.vue'
 import noteStore from '@/store/note'
 import eventBus from '@/eventBus'
 import Note from '@/interface/Note'
@@ -34,6 +36,7 @@ import Note from '@/interface/Note'
 @Component({
   components: {
     EditorToolbar,
+    MarkdownBody,
   },
 })
 export default class EditorStage extends Vue {
