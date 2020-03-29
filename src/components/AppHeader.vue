@@ -82,7 +82,17 @@ export default class AppHeader extends Vue {
 
   created() {
     firebase.auth().onAuthStateChanged(user => {
-      this.loaded = true
+      if (!user) return
+
+      const image = new Image()
+      image.addEventListener(
+        'load',
+        function fn(this: AppHeader) {
+          this.loaded = true
+          image.removeEventListener('load', fn)
+        }.bind(this)
+      )
+      image.src = user.photoURL ? user.photoURL : 'defaultPhotoURL'
     })
   }
 
