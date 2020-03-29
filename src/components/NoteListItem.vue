@@ -23,6 +23,9 @@ export default class NoteListItem extends Vue {}
 .note-list-item {
   padding: 10px;
   border-bottom: 1px solid #9a9a9a;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
   &:hover {
     background: #eee;
   }

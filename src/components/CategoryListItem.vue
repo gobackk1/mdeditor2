@@ -83,12 +83,16 @@ export default class CategoryListItem extends Vue {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+
   &:hover {
     background: #000;
     transition: 0.2s;
     .category-list-item__tool {
       opacity: 1;
       visibility: visible;
+    }
+    .category-list-item__title {
+      opacity: 0.4;
     }
   }
   &__tool {
@@ -100,6 +104,11 @@ export default class CategoryListItem extends Vue {
     opacity: 0;
     visibility: hidden;
   }
+  &__title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 }
 
 .tool {
@@ -109,7 +118,7 @@ export default class CategoryListItem extends Vue {
   %tool__item {
     @extend %button-reset;
     transition: 0.2s;
-    opacity: 0.5;
+    opacity: 0.7;
     &::before {
       color: #fff;
     }

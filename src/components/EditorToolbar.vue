@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="tool-bar">
-      <div>
+      <div class="tool-bar__title">
         <span class="tool-bar__category-title"
           ><Icon :color="'inherit'" :unicode="'f07b'" :iconSize="20" class="category-icon"></Icon
           >{{ categoryTitle }}</span
@@ -78,6 +78,12 @@ export default class EditorToolbar extends Vue {
   align-content: center;
   &__category-title {
     vertical-align: middle;
+  }
+  &__title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 200px;
   }
 }
 
