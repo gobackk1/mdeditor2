@@ -9,14 +9,7 @@
         ></EditorToolbar>
       </div>
       <MarkdownBody class="editor__stage" v-if="!editable" :content="body"></MarkdownBody>
-      <!-- <button @click="onClickButton">保存</button> -->
-      <textarea
-        class="editor__stage"
-        v-if="editable && note"
-        v-model="body"
-        cols="30"
-        rows="10"
-      ></textarea>
+      <textarea class="editor__stage" v-if="editable" v-model="body" cols="30" rows="10"></textarea>
     </div>
   </div>
 </template>
@@ -51,7 +44,6 @@ export default class EditorStage extends Vue {
   }
 
   created() {
-    // eventBus.$on('ready', this.fetchNote)
     this.note = noteStore.getNoteById(this.$route.params.noteId)
   }
 
@@ -91,15 +83,6 @@ export default class EditorStage extends Vue {
     }
 
     this.note[status] = !this.note[status]
-    await this.updateNote()
-  }
-
-  public fetchNote(): void {
-    const note = noteStore.getNoteById(this.$route.params.noteId)
-    note ? (this.note = note) : (this.note = null)
-  }
-
-  public async onClickButton(): Promise<void> {
     await this.updateNote()
   }
 
