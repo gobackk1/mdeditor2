@@ -11,7 +11,7 @@
       </button>
     </div>
     <div class="note-list__stage">
-      <ul>
+      <ul id="note-list">
         <li v-for="note in filteredNotes" :key="note.id">
           <RouterLink
             :to="{

@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import AppHeader from '@/components/AppHeader.vue'
 import categoryStore from '@/store/category'
 import userStore from '@/store/user'
@@ -22,6 +22,22 @@ import firebase from 'firebase'
   },
 })
 export default class App extends Vue {
+  @Watch('$route')
+  public router(to: any, from: any) {
+    if (from.name === 'Editor') return
+
+    this.$nextTick(() => {
+      const defaultList = document.querySelector('#list-default li:first-child a')
+      ;(defaultList as HTMLElement).click()
+      console.log(to, 'to')
+      console.log(from, 'from')
+      setTimeout(() => {
+        const noteList = document.querySelector('#note-list li:first-child a')
+        console.log(noteList)
+        ;(noteList as HTMLElement).click()
+      })
+    })
+  }
   created() {
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
