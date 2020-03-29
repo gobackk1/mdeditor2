@@ -9,13 +9,40 @@
           <ul class="header__menu menu-list" :class="{ loaded: loaded }">
             <li class="menu-list__item loading-icon" v-if="!loaded"></li>
             <li class="menu-list__item--editor" v-if="isLogin">
-              <RouterLink :to="{ name: 'Editor' }" title="編集画面">編集</RouterLink>
+              <RouterLink :to="{ name: 'Editor' }" title="編集画面">
+                <Icon
+                  :color="'#fefefe'"
+                  :unicode="'f0db'"
+                  :icon-size="20"
+                  :font-size="13"
+                  class="icon"
+                  >編集</Icon
+                >
+              </RouterLink>
             </li>
             <li class="menu-list__item--setting" v-if="isLogin">
-              <RouterLink :to="{ name: 'Setting' }" title="設定">設定</RouterLink>
+              <RouterLink :to="{ name: 'Setting' }" title="設定">
+                <Icon
+                  :color="'#fefefe'"
+                  :unicode="'f085'"
+                  :icon-size="20"
+                  :font-size="13"
+                  class="icon"
+                  >設定</Icon
+                >
+              </RouterLink>
             </li>
             <li class="menu-list__item--info">
-              <RouterLink :to="{ name: 'Info' }" title="情報">情報</RouterLink>
+              <RouterLink :to="{ name: 'Info' }" title="情報">
+                <Icon
+                  :color="'#fefefe'"
+                  :unicode="'f05a'"
+                  :icon-size="20"
+                  :font-size="13"
+                  class="icon"
+                  >情報</Icon
+                >
+              </RouterLink>
             </li>
             <li class="menu-list__item" v-if="!isLogin">
               <button class="button--login" @click="onClickLogin" type="button">ログイン</button>
@@ -43,8 +70,13 @@
 import { Vue, Component } from 'vue-property-decorator'
 import userStore from '@/store/user'
 import firebase from 'firebase'
+import Icon from '@/components/Icon.vue'
 
-@Component({})
+@Component({
+  components: {
+    Icon,
+  },
+})
 export default class AppHeader extends Vue {
   loaded: boolean = false
 
@@ -115,34 +147,34 @@ export default class AppHeader extends Vue {
   }
   &__item--editor {
     @extend %menu-list__item;
-    font-size: 12px;
     text-align: center;
     a::before {
-      @include font-awesome(\f0db, 20px);
       padding-bottom: 5px;
     }
   }
   &__item--setting {
     @extend %menu-list__item;
-    font-size: 12px;
     text-align: center;
     a::before {
-      @include font-awesome(\f085, 20px);
       padding-bottom: 5px;
     }
   }
   &__item--info {
     @extend %menu-list__item;
-    font-size: 12px;
     text-align: center;
     a::before {
-      @include font-awesome(\f05a, 20px);
       padding-bottom: 5px;
     }
   }
   &__item--img {
     @extend %menu-list__item;
     width: 40px;
+  }
+}
+
+.icon {
+  &::before {
+    padding-bottom: 5px;
   }
 }
 

@@ -87,6 +87,7 @@ class CategoryStore extends VuexModule implements ICategoryStore {
         title: doc.data().title,
         deletable: doc.data().deletable,
         renamable: doc.data().renamable,
+        iconColor: doc.data().iconColor,
       }
       this.ADD_CATEGORY(category)
     })

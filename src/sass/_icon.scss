@@ -1,0 +1,30 @@
+.fa-icon {
+  text-align: center;
+  &::before {
+    display: inline-block;
+    font-family: 'Font Awesome 5 Free', 'Font Awesome 5 Brands';
+    font-weight: 900;
+  }
+}
+
+$icons: (
+  folder: f07b,
+  editer: f0db,
+  setting: f085,
+  info: f05a,
+  add_category: f65e,
+  toggleSide: f101,
+  add_note: f044,
+  markdown: f60f,
+  trash: f2ed,
+  edit_note: f4ff,
+  star: f005,
+);
+
+@each $prop, $unicode in $icons {
+  .#{$unicode} {
+    &::before {
+      content: unquote('"\\') + $unicode + unquote('"');
+    }
+  }
+}

@@ -5,7 +5,6 @@
 }
 
 @mixin l-app-content() {
-  height: 100%;
   &__inner {
     @extend %l-container;
     height: 100%;

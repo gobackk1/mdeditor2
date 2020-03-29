@@ -8,15 +8,20 @@ import {
 } from 'vuex-module-decorators'
 import store from '@/store/store'
 import firebase from 'firebase'
+import Toggle from '@/interface/Toggle'
+import User from '@/interface/User'
 
 export interface IUserStore {
   // TODO: loginUserの型定義
   loginUser: any
 }
 
-@Module({ dynamic: true, store, name: 'user', namespaced: true })
-class User extends VuexModule implements IUserStore {
-  loginUser: any = null
+@Module({ dynamic: true, store, name: 'UserStore', namespaced: true })
+class UserStore extends VuexModule implements IUserStore {
+  public loginUser: User | null = null
+  public toggle: Toggle = {
+    sideBar: false,
+  }
 
   get isLogin(): boolean {
     return !!this.loginUser
@@ -27,19 +32,27 @@ class User extends VuexModule implements IUserStore {
   }
 
   get photoURL(): string {
-    return this.loginUser ? this.loginUser.photoURL : ''
+    if (this.loginUser) {
+      console.log(this.loginUser.photoURL)
+      return this.loginUser ? this.loginUser.photoURL : ''
+    }
+    return ''
   }
 
-  get uid(): number | null {
+  get uid(): string | null {
     return this.loginUser ? this.loginUser.uid : null
   }
 
-  @Mutation SET_LOGIN_USER(user: any) {
+  @Mutation SET_LOGIN_USER(user: User) {
     this.loginUser = user
   }
 
   @Mutation DELETE_LOGIN_USER() {
     this.loginUser = null
+  }
+
+  @Mutation TOGGLE_SIDE_BAR() {
+    this.toggle.sideBar = !this.toggle.sideBar
   }
 
   @Action({}) login() {
@@ -59,6 +72,10 @@ class User extends VuexModule implements IUserStore {
     this.DELETE_LOGIN_USER()
   }
 
+  @Action({}) toggleSideBar() {
+    this.TOGGLE_SIDE_BAR()
+  }
+
   // actions + mutation
   // incrementCounter decrementCounter両方をリセットするアクションとミューテーション
   // @MutationAction({ mutate: ["incrementCounter", "decrementCounter"] })
@@ -70,4 +87,4 @@ class User extends VuexModule implements IUserStore {
   // }
 }
 
-export default getModule(User)
+export default getModule(UserStore)

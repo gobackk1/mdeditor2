@@ -1,22 +1,19 @@
 <template>
-  <div class="editor">
-    <div class="editor__tool">
-      <EditorToolbar></EditorToolbar>
-    </div>
-    <div class="editor__stage stage" v-if="note">
-      <div class="stage__body">
-        {{ categoryTitle }}
-        {{ note.body }}
-        <MarkdownBody :content="note.body"></MarkdownBody>
+  <div>
+    <div class="editor">
+      <div class="editor__tool">
+        <EditorToolbar
+          :note="note"
+          @toggle-status="changeStatus"
+          @edit="toggleEdit"
+        ></EditorToolbar>
       </div>
-      <button @click="onClickButton">保存</button>
-      <button @click="onClickDeleteButton">削除</button>
-      <button @click="onClickStarButton">{{ note.isFavorite ? '⭐️' : '☆' }}</button>
-      <button @click="onClickTrashButton">{{ note.isTrash ? '●' : '○' }}</button>
+      <MarkdownBody class="editor__stage" v-if="!editable" :content="body"></MarkdownBody>
+      <!-- <button @click="onClickButton">保存</button> -->
       <textarea
-        v-if="note"
-        v-model="note.body"
-        class="stage__textarea"
+        class="editor__stage"
+        v-if="editable && note"
+        v-model="body"
         cols="30"
         rows="10"
       ></textarea>
@@ -41,19 +38,60 @@ import Note from '@/interface/Note'
 })
 export default class EditorStage extends Vue {
   public note: Note | null = null
+  public beforeBody!: string
+  public afterBody!: string
+  public editable: boolean = false
 
   @Watch('$route')
   route() {
-    this.fetchNote()
+    this.editable = false
+    this.beforeBody = ''
+    this.afterBody = ''
+    this.note = noteStore.getNoteById(this.$route.params.noteId)
   }
 
   created() {
     // eventBus.$on('ready', this.fetchNote)
-    this.fetchNote()
+    this.note = noteStore.getNoteById(this.$route.params.noteId)
   }
 
-  public get categoryTitle(): string {
-    return this.note ? categoryStore.getTitleById(this.note.categoryId) : ''
+  public get body(): string {
+    return this.note ? this.note.body : ''
+  }
+
+  public set body(body: string) {
+    if (!this.note) return
+    this.note.body = body
+  }
+
+  public toggleEdit(): void {
+    this.editable = !this.editable
+
+    if (!this.note) return
+
+    if (this.editable) {
+      this.beforeBody = this.note.body
+    } else {
+      this.afterBody = this.note.body
+      if (this.beforeBody !== this.afterBody) {
+        this.updateNote()
+      }
+    }
+  }
+
+  public async changeStatus(status: keyof Note): Promise<void> {
+    if (!this.note) return
+    if (status !== 'isTrash' && status !== 'isFavorite') return
+
+    if (status === 'isTrash') {
+      if (this.note.isFavorite) {
+        alert('お気に入り登録したノートはゴミ箱へ移動できません')
+        return
+      }
+    }
+
+    this.note[status] = !this.note[status]
+    await this.updateNote()
   }
 
   public fetchNote(): void {
@@ -65,42 +103,28 @@ export default class EditorStage extends Vue {
     await this.updateNote()
   }
 
-  public async onClickDeleteButton(): Promise<void> {
-    if (!this.note) return
-
-    await noteStore.deleteNote(this.note)
-    this.note = null
-    this.$router.push({
-      name: 'Editor',
-      params: { categoryId: this.$route.params.categoryId },
-    })
-  }
-
-  public async onClickStarButton(): Promise<void> {
-    if (!this.note) return
-
-    this.note.isFavorite = !this.note.isFavorite
-    await this.updateNote()
-  }
-
-  public async onClickTrashButton(): Promise<void> {
-    if (!this.note) return
-
-    if (this.note.isFavorite) {
-      alert('お気に入り登録したノートはゴミ箱へ移動できません')
-      return
-    }
-
-    this.note.isTrash = !this.note.isTrash
-    await this.updateNote()
-  }
-
   public async updateNote(): Promise<void> {
     if (!this.note) return
-
+    console.log('updateNote')
     await noteStore.updateNote(this.note)
     eventBus.$emit('noteUpdated')
-    this.fetchNote()
+    this.note = noteStore.getNoteById(this.$route.params.noteId)
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.editor {
+  height: 100%;
+  padding: 30px;
+  background: #fff;
+  &__tool {
+    margin-bottom: 20px;
+  }
+  &__stage {
+    height: calc(100% - 40px);
+    width: 100%;
+    overflow: scroll;
+  }
+}
+</style>

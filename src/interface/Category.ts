@@ -3,4 +3,5 @@ export default interface Category {
   title: string
   deletable: boolean
   renamable: boolean
+  iconColor: string
 }

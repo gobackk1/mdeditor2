@@ -6,10 +6,27 @@
         <h2>このアプリは何？</h2>
         <p>ブラウザ上で動作するマークダウンエディタです。ここにソースコードはる</p>
         <h2>使ったものたち</h2>
-        <p>
-          HTML / SASS / TypeScript / Vue / vue-cli /Jest / Webpack / Firebase Authentication /
-          Firestore / VSCode / Adobe XD
-        </p>
+        <h3>フロントエンド</h3>
+        <ul>
+          <li>Vue.js</li>
+          <li>TypeScript</li>
+          <li>Scss</li>
+        </ul>
+        <h3>バックエンド</h3>
+        <ul>
+          <li>認証機能: Firebase Authentication</li>
+          <li>データベース: Firestore</li>
+        </ul>
+        <h3>開発ツール</h3>
+        <ul>
+          <li>vue-cli</li>
+          <li>VSCode</li>
+          <li>Adobe XD</li>
+        </ul>
+        <h3>テストツール</h3>
+        <ul>
+          <li>Jest</li>
+        </ul>
         <h2>作業時間</h2>
         <p>準備中</p>
       </div>
@@ -55,6 +72,7 @@ export default class Home extends Vue {
 <style lang="scss" scoped>
 .home {
   @include l-app-content();
+  height: 100%;
   &__hero {
     @extend %l-container;
     height: 500px;

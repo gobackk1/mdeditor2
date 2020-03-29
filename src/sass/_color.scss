@@ -1,4 +1,18 @@
+$color_disable: #989898;
+
 $color_header_bg: #111;
 $color_header_text: #fff;
 
 $color_app_bg: #e2e2e2;
+
+$color_sidebar_text: #fefefe;
+$color_sidebar_bg: #3c3c3c;
+
+$color_note_list_text: #585858;
+$color_note_list_bg: $color_app_bg;
+
+$color_favorite_true: #ffd165;
+$color_favorite_false: $color_disable;
+$color_trash_true: #ff5151;
+$color_trash_false: $color_disable;
+$color_edit: #333;

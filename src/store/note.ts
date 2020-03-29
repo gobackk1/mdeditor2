@@ -35,8 +35,8 @@ class NoteStore extends VuexModule implements INoteStore {
     }
   }
 
-  get getNoteById(): (noteId: string) => Note | undefined {
-    return noteId => this.notes.find(note => note.id === noteId)
+  get getNoteById(): (noteId: string) => Note | null {
+    return noteId => this.notes.find(note => note.id === noteId) || null
   }
 
   get counterByAllCategory(): number {
@@ -201,8 +201,6 @@ class NoteStore extends VuexModule implements INoteStore {
       .get()
 
     snapshot.forEach(doc => {
-      console.log(doc.data())
-
       const note: Note = {
         id: doc.id,
         categoryId: doc.data().ref.id,

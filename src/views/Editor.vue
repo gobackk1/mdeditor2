@@ -1,14 +1,8 @@
 <template>
-  <div class="editor">
-    <div class="editor__category-list">
-      <CategoryList></CategoryList>
-    </div>
-    <div class="editor__note-list">
-      <NoteList></NoteList>
-    </div>
-    <div class="editor__stage">
-      <EditorStage></EditorStage>
-    </div>
+  <div class="editor" :class="{ 'sidebar-is-close': $store.state.UserStore.toggle.sideBar }">
+    <CategoryList class="editor__category-list"></CategoryList>
+    <NoteList class="editor__note-list"></NoteList>
+    <EditorStage class="editor__note"></EditorStage>
   </div>
 </template>
 
@@ -29,20 +23,23 @@ export default class Editor extends Vue {}
 </script>
 
 <style lang="scss" scoped>
-NoteList {
-  background: #000;
-}
 .editor {
   @include l-app-content();
   display: flex;
+  transition: transform 0.3s;
+  &.sidebar-is-close {
+    transform: translateX(-250px);
+    margin-right: -250px;
+  }
   &__category-list {
     width: 300px;
   }
   &__note-list {
     width: 300px;
   }
-  &__stage {
-    width: 300px;
+  &__note {
+    width: calc(100% - 600px);
+    flex: auto;
   }
 }
 </style>

@@ -22,11 +22,18 @@ button {
 @import './variable';
 @import './layout';
 @import './color';
+@import './icon';
 
 @mixin font-awesome($unicode, $font-size: 20px, $font-weight: 900) {
   content: unquote('"') + $unicode + unquote('"');
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Free', 'Font Awesome 5 Brands';
   font-weight: $font-weight;
   font-size: $font-size;
   display: block;
+}
+
+%button-reset {
+  background: none;
+  border: none;
+  cursor: pointer;
 }
