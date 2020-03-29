@@ -13,6 +13,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import categoryStore from '@/store/category'
 import userStore from '@/store/user'
 import noteStore from '@/store/note'
+import { Route } from 'vue-router'
 import eventBus from '@/eventBus'
 import firebase from 'firebase'
 
@@ -23,7 +24,7 @@ import firebase from 'firebase'
 })
 export default class App extends Vue {
   @Watch('$route')
-  public router(to: any, from: any) {
+  public router(to: Route, from: Route) {
     if (from.name === 'Editor') return
 
     this.$nextTick(() => {
