@@ -1,4 +1,4 @@
-import serverTimestamp from '@/interface/serverTimestamp'
+import ServerTimestamp from '@/interface/serverTimestamp'
 
 export default interface Note {
   id: string
@@ -6,6 +6,6 @@ export default interface Note {
   body: string
   isFavorite: boolean
   isTrash: boolean
-  createdAt: serverTimestamp
-  updatedAt: serverTimestamp
+  createdAt: ServerTimestamp
+  updatedAt: ServerTimestamp
 }

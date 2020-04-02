@@ -1,9 +1,9 @@
 <template>
-  <div id="app" class="app">
+  <div id="app" class="app" :class="`theme-${theme}`">
     <header class="app__header">
       <AppHeader></AppHeader>
     </header>
-    <RouterView class="app__content"></RouterView>
+    <RouterView class="app__content" :style="`font-family: ${fontFamily}!important;`"></RouterView>
   </div>
 </template>
 
@@ -11,6 +11,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import AppHeader from '@/components/AppHeader.vue'
 import categoryStore from '@/store/category'
+import settingStore, { Theme } from '@/store/setting'
 import userStore from '@/store/user'
 import noteStore from '@/store/note'
 import { Route } from 'vue-router'
@@ -39,6 +40,7 @@ export default class App extends Vue {
       })
     })
   }
+
   created() {
     firebase.auth().onAuthStateChanged(async user => {
       if (user) {
@@ -56,6 +58,14 @@ export default class App extends Vue {
       }
     })
   }
+
+  public get fontFamily(): string {
+    return settingStore.fontFamily
+  }
+
+  public get theme(): Theme {
+    return settingStore.theme
+  }
 }
 </script>
 
@@ -66,6 +76,7 @@ export default class App extends Vue {
 .app {
   height: 100vh;
   background: $color_app_bg;
+  transition: 0.4s;
 
   &__header {
     height: $header_height;
@@ -73,7 +84,10 @@ export default class App extends Vue {
 
   &__content {
     height: calc(100% - #{$header_height});
-    overflow: scroll;
+    overflow-y: scroll;
   }
+}
+
+.theme-dark.app {
 }
 </style>

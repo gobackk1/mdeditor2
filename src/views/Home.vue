@@ -16,6 +16,7 @@
         <ul>
           <li>認証機能: Firebase Authentication</li>
           <li>データベース: Firestore</li>
+          <li>デプロイ: Firebase Hosting</li>
         </ul>
         <h3>開発ツール</h3>
         <ul>

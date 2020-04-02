@@ -1,6 +1,6 @@
 <template>
   <div class="info">
-    <div class="info__inner">
+    <div class="info__inner markdown-body">
       <h2>info</h2>
     </div>
   </div>

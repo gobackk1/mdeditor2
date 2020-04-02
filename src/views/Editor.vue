@@ -9,8 +9,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import CategoryList from '@/components/CategoryList.vue'
-import NoteList from '@/components/NoteList.vue'
+import settingStore from '@/store/setting'
 import EditorStage from '@/components/EditorStage.vue'
+import NoteList from '@/components/NoteList.vue'
 
 @Component({
   components: {
@@ -19,7 +20,57 @@ import EditorStage from '@/components/EditorStage.vue'
     EditorStage,
   },
 })
-export default class Editor extends Vue {}
+export default class Editor extends Vue {
+  public ctrlKeyPressed: boolean = false
+
+  created() {
+    if (!settingStore.changeFontSizeByWheel) return
+
+    document.addEventListener('wheel', this.onMouseWheel)
+    document.addEventListener('keyup', this.onKeyEvent)
+    document.addEventListener('keydown', this.onKeyEvent)
+  }
+
+  beforeDestroy() {
+    document.removeEventListener('wheel', this.onMouseWheel)
+    document.removeEventListener('keyup', this.onKeyEvent)
+    document.removeEventListener('keydown', this.onKeyEvent)
+  }
+
+  public onKeyEvent(e: KeyboardEvent): void {
+    this.ctrlKeyPressed = e.ctrlKey
+  }
+
+  public onMouseWheel(e: MouseWheelEvent): void {
+    if (!this.ctrlKeyPressed) return
+
+    if (e.deltaY > 0) {
+      switch (settingStore.fontSize) {
+        case 'large':
+          break
+        case 'medium':
+          settingStore.setFontSize('large')
+          break
+        case 'small':
+          settingStore.setFontSize('medium')
+          break
+        default:
+      }
+    } else {
+      switch (settingStore.fontSize) {
+        case 'large':
+          settingStore.setFontSize('medium')
+          break
+        case 'medium':
+          settingStore.setFontSize('small')
+          break
+        case 'small':
+          break
+        default:
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -93,8 +93,8 @@ export default class AppHeader extends Vue {
       //   }.bind(this)
       // )
       // image.src = user.photoURL ? user.photoURL : 'defaultPhotoURL'
+      this.loaded = true
     })
-    this.loaded = true
   }
 
   get isLogin(): boolean {

@@ -23,6 +23,7 @@ button {
 @import './layout';
 @import './color';
 @import './icon';
+@import './theme/dark';
 
 @mixin font-awesome($unicode, $font-size: 20px, $font-weight: 900) {
   content: unquote('"') + $unicode + unquote('"');

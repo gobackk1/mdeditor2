@@ -1,0 +1,50 @@
+// HACK: 詳細度確保のため
+// TODO: 技術的負債になりそうなので運用ルールを考える
+body .theme-dark {
+  background: #313131;
+  color: #fff;
+  .app__content > div > .markdown-body,
+  .app__content > .markdown-body {
+    background: #1b1b1b;
+    color: #fff;
+    pre {
+      background: #222;
+    }
+  }
+  .category-list {
+    background: #1b1b1b;
+  }
+  .note-list {
+    background: #313131;
+    color: inherit;
+    &__search {
+      background: #111;
+    }
+  }
+  .note-list-item {
+    &:hover {
+      color: #313131;
+    }
+  }
+  .tool {
+    &__button {
+      .fa-icon {
+        color: #fff !important;
+      }
+    }
+  }
+  .editor {
+    background: #3c3c3c;
+    .markdown-body {
+      color: #fff;
+      pre {
+        background: #222;
+      }
+    }
+  }
+  [class^='button-edit--'] {
+    .fa-icon {
+      color: #fff !important;
+    }
+  }
+}

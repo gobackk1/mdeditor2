@@ -19,9 +19,12 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import EditorToolbar from '@/components/EditorToolbar.vue'
 import categoryStore from '@/store/category'
 import MarkdownBody from '@/components/MarkdownBody.vue'
+import settingStore from '@/store/setting'
 import noteStore from '@/store/note'
 import eventBus from '@/eventBus'
 import Note from '@/interface/Note'
+
+import Test from '@/views/Setting.vue'
 
 @Component({
   components: {
@@ -45,6 +48,7 @@ export default class EditorStage extends Vue {
 
   created() {
     this.note = noteStore.getNoteById(this.$route.params.noteId)
+    // console.log(Test._fontSize, 'Test')
   }
 
   public get body(): string {
@@ -80,6 +84,9 @@ export default class EditorStage extends Vue {
         alert('お気に入り登録したノートはゴミ箱へ移動できません')
         return
       }
+      if (settingStore.checkDelete && !this.note[status]) {
+        if (!confirm('本当にゴミ箱へ移動して良いですか？')) return
+      }
     }
 
     this.note[status] = !this.note[status]
@@ -107,7 +114,7 @@ export default class EditorStage extends Vue {
   &__stage {
     height: calc(100% - 40px);
     width: 100%;
-    overflow: scroll;
+    overflow-y: scroll;
   }
 }
 </style>

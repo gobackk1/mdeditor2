@@ -1,11 +1,16 @@
 <template>
   <div>
-    <div class="markdown-body" v-html="compiledMarkdown"></div>
+    <div
+      class="markdown-body"
+      v-html="compiledMarkdown"
+      :style="`font-size: ${fontSize}%; font-family: ${fontFamily};`"
+    ></div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import settingStore from '@/store/setting'
 
 //TODO: markdown-it系の型
 const MarkdownIt = require('markdown-it')
@@ -34,8 +39,19 @@ export default class MarkdownBody extends Vue {
   @Prop({})
   public content!: string
 
-  created() {
-    // console.log(this.content)
+  public get fontSize(): number {
+    switch (settingStore.fontSize) {
+      case 'small':
+        return 90
+      case 'medium':
+        return 100
+      case 'large':
+        return 110
+    }
+  }
+
+  public get fontFamily(): string {
+    return settingStore.fontFamily
   }
 
   public get compiledMarkdown(): string {

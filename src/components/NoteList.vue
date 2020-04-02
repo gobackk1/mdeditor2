@@ -33,6 +33,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import NoteListItem from '@/components/NoteListItem.vue'
+import settingStore from '@/store/setting'
 import noteStore from '@/store/note'
 import eventBus from '@/eventBus'
 import firebase from 'firebase'
@@ -53,7 +54,7 @@ import Icon from '@/components/Icon.vue'
 
       const hasNewLine = /\r\n|\r|\n/.exec(body)
       const index = hasNewLine ? hasNewLine.index : 30
-      return body === '' ? 'empty title' : body.slice(0, index)
+      return body === '' ? settingStore.frontMatterTitleField : body.slice(0, index)
     },
   },
 })
@@ -181,13 +182,15 @@ export default class NoteList extends Vue {
     width: 100%;
     font-size: 20px;
     margin-bottom: 10px;
+    padding: 5px;
+    border: none;
   }
   &__tool {
     margin-bottom: 10px;
   }
   &__stage {
     height: calc(100% - 100px);
-    overflow: scroll;
+    overflow-y: scroll;
   }
 }
 

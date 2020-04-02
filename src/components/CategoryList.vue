@@ -130,7 +130,7 @@ export default class CategoryList extends Vue {
   }
   &__stage {
     height: calc(100% - 185px);
-    overflow: scroll;
+    overflow-y: scroll;
   }
 }
 </style>
