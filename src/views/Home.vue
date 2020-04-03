@@ -45,8 +45,6 @@ export default class Home extends Vue {
   // スクロールしきるとがたつくため
   public threshould!: number
 
-  created() {}
-
   mounted() {
     const homeHero = document.querySelector('.home__hero')
     this.homeInner = document.querySelector('.home__inner')

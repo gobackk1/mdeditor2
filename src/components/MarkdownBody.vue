@@ -37,7 +37,7 @@ export default class MarkdownBody extends Vue {
     .use(container, 'danger')
 
   @Prop({})
-  public content!: string
+  public body!: string
 
   public get fontSize(): number {
     switch (settingStore.fontSize) {
@@ -55,7 +55,7 @@ export default class MarkdownBody extends Vue {
   }
 
   public get compiledMarkdown(): string {
-    return this.markdownIt.render(this.content)
+    return this.markdownIt.render(this.body)
   }
 }
 </script>

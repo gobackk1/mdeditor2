@@ -1,9 +1,14 @@
-import Vue from 'vue'
+import MarkdownBody from '@/components/MarkdownBody.vue'
+import CategoryList from '@/components/CategoryList.vue'
+import EditorStage from '@/components/EditorStage.vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import NoteList from '@/components/NoteList.vue'
+import Textarea from '@/components/Textarea.vue'
 import Setting from '../views/Setting.vue'
-import Info from '../views/Info.vue'
 import Editor from '../views/Editor.vue'
+import Info from '../views/Info.vue'
+import Home from '../views/Home.vue'
+import Vue from 'vue'
 
 Vue.use(VueRouter)
 
@@ -14,9 +19,30 @@ const routes = [
     component: Home,
   },
   {
-    path: '/categories/:categoryId?/notes/:noteId?',
-    name: 'Editor',
+    path: '/editor',
     component: Editor,
+    children: [
+      {
+        path: 'categories/:categoryId?/notes/:noteId?',
+        components: {
+          category: CategoryList,
+          note: NoteList,
+          main: EditorStage,
+        },
+        children: [
+          {
+            path: '',
+            name: 'Markdown',
+            component: MarkdownBody,
+          },
+          {
+            path: 'editor',
+            name: 'Editor',
+            component: Textarea,
+          },
+        ],
+      },
+    ],
   },
   {
     path: '/categories',

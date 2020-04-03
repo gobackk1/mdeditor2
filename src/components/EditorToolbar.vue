@@ -8,13 +8,9 @@
         >
       </div>
       <div class="tool-bar__buttons">
-        <button
-          :class="true ? 'button-edit--true' : 'button-edit--false'"
-          type="button"
-          @click="edit"
-        >
+        <RouterLink :to="{ name: route, params: { categoryId, noteId } }">
           <Icon :color="'inherit'" :unicode="'f4ff'" :iconSize="20" class="icon"></Icon>
-        </button>
+        </RouterLink>
         <button
           :class="isFavorite ? 'button-favorite--true' : 'button-favorite--false'"
           type="button"
@@ -35,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
+import { Vue, Component, Prop, Emit, ProvideReactive } from 'vue-property-decorator'
 import categoryStore from '@/store/category'
 import noteStore from '@/store/note'
 import eventBus from '@/eventBus'
@@ -56,6 +52,19 @@ export default class EditorToolbar extends Vue {
 
   @Emit()
   public edit(status: string): void {}
+
+  public get route(): string {
+    // console.log(this.$route)
+    // return ''
+    return this.$route.name === 'Editor' ? 'Markdown' : 'Editor'
+  }
+
+  public get categoryId(): string {
+    return this.note ? this.note.categoryId : 'all'
+  }
+  public get noteId(): string {
+    return this.note ? this.note.id : 'all'
+  }
 
   public get isFavorite(): boolean {
     return this.note ? this.note.isFavorite : false

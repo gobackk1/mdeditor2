@@ -1,8 +1,8 @@
 <template>
   <div class="editor" :class="{ 'sidebar-is-close': $store.state.UserStore.toggle.sideBar }">
-    <CategoryList class="editor__category-list"></CategoryList>
-    <NoteList class="editor__note-list"></NoteList>
-    <EditorStage class="editor__note"></EditorStage>
+    <RouterView name="category" class="editor__category-list"></RouterView>
+    <RouterView name="note" class="editor__note-list"></RouterView>
+    <RouterView name="main" class="editor__note"></RouterView>
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <RouterLink
-      :to="{ name: 'Editor', params: { categoryId: category.id } }"
+      :to="{ name: 'Markdown', params: { categoryId: category.id } }"
       class="category-list-item"
     >
       <div class="category-list-item__title">

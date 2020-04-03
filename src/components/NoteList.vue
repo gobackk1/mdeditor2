@@ -15,7 +15,7 @@
         <li v-for="note in filteredNotes" :key="note.id">
           <RouterLink
             :to="{
-              name: 'Editor',
+              name: 'Markdown',
               params: {
                 categoryId: note.categoryId,
                 noteId: note.id,
@@ -48,6 +48,7 @@ import Icon from '@/components/Icon.vue'
   },
   filters: {
     title(body: string): string {
+      if (!body) return settingStore.frontMatterTitleField
       if (/#*\s/.test(body)) {
         body = body.replace(/#*\s/, '')
       }

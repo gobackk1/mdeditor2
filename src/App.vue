@@ -26,16 +26,14 @@ import firebase from 'firebase'
 export default class App extends Vue {
   @Watch('$route')
   public router(to: Route, from: Route) {
-    if (from.name === 'Editor') return
+    if (from.name === 'Markdown') return
 
     this.$nextTick(() => {
       const defaultList = document.querySelector('#list-default li:first-child a')
       ;(defaultList as HTMLElement).click()
-      console.log(to, 'to')
-      console.log(from, 'from')
-      setTimeout(() => {
+
+      this.$nextTick(() => {
         const noteList = document.querySelector('#note-list li:first-child a')
-        console.log(noteList)
         ;(noteList as HTMLElement).click()
       })
     })
