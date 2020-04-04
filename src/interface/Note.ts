@@ -1,4 +1,4 @@
-import ServerTimestamp from '@/interface/serverTimestamp'
+import ServerTimestamp from '@/interface/ServerTimestamp'
 
 export default interface Note {
   id: string

@@ -12,8 +12,7 @@ import Toggle from '@/interface/Toggle'
 import User from '@/interface/User'
 
 export interface IUserStore {
-  // TODO: loginUserの型定義
-  loginUser: any
+  loginUser: User | null
 }
 
 @Module({ dynamic: true, store, name: 'UserStore', namespaced: true })
@@ -75,16 +74,6 @@ class UserStore extends VuexModule implements IUserStore {
   @Action({}) toggleSideBar() {
     this.TOGGLE_SIDE_BAR()
   }
-
-  // actions + mutation
-  // incrementCounter decrementCounter両方をリセットするアクションとミューテーション
-  // @MutationAction({ mutate: ["incrementCounter", "decrementCounter"] })
-  // async resetCounter() {
-  //   return {
-  //     incrementCounter: 0,
-  //     decrementCounter: 1000
-  //   };
-  // }
 }
 
 export default getModule(UserStore)

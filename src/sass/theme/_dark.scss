@@ -1,50 +1,54 @@
-// HACK: 詳細度確保のため
-// TODO: 技術的負債になりそうなので運用ルールを考える
+// TODO: テーマが増えるならもう少し考える
+$color_theme_dark_text: #fff;
+$color_theme_dark_main: #1b1b1b;
+$color_theme_dark_main_light: #313131;
+$color_theme_dark_main_light_extra: #3c3c3c;
+
 body .theme-dark {
-  background: #313131;
-  color: #fff;
+  background: $color_theme_dark_main_light;
+  color: $color_theme_dark_text;
   .app__content > div > .markdown-body,
   .app__content > .markdown-body {
-    background: #1b1b1b;
-    color: #fff;
+    background: $color_theme_dark_main;
+    color: $color_theme_dark_text;
     pre {
-      background: #222;
+      background: $color_theme_dark_main_light;
     }
   }
   .category-list {
-    background: #1b1b1b;
+    background: $color_theme_dark_main;
   }
   .note-list {
-    background: #313131;
+    background: $color_theme_dark_main_light;
     color: inherit;
     &__search {
-      background: #111;
+      background: $color_theme_dark_main;
     }
   }
   .note-list-item {
     &:hover {
-      color: #313131;
+      color: $color_theme_dark_main_light;
     }
   }
   .tool {
     &__button {
       .fa-icon {
-        color: #fff !important;
+        color: $color_theme_dark_text !important;
       }
     }
   }
   .editor {
-    background: #3c3c3c;
+    background: $color_theme_dark_main_light_extra;
     .markdown-body {
-      color: #fff;
+      color: $color_theme_dark_text;
       pre {
-        background: #222;
+        background: $color_theme_dark_main_light;
       }
     }
   }
   [class^='button-edit--'] {
     .fa-icon {
-      color: #fff !important;
+      color: $color_theme_dark_text !important;
     }
   }
 }

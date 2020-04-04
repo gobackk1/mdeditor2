@@ -6,11 +6,11 @@ import {
   getModule,
   Module,
 } from 'vuex-module-decorators'
-import Category from '@/interface/Category'
 import userStore from '@/store/user'
-import store from '@/store/store'
-import firebase from 'firebase'
 import * as util from '@/util'
+import Category from '@/interface/Category'
+import firebase from 'firebase'
+import store from '@/store/store'
 import Vue from 'vue'
 
 export interface ICategoryStore {

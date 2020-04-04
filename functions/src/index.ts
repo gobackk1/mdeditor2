@@ -10,23 +10,11 @@ const firebaseTools = require('firebase-tools')
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 
 // @ts-ignore
-exports.helloWorld = functions.https.onCall((data, context) => {
-  return 'hello'
-})
-// @ts-ignore
-exports.yeah = functions.region('asia-northeast1').https.onCall((data, context) => {
-  return {
-    text: 'static',
-    testData: data,
-    testContext: context.auth
-  }
-})
-
 exports.recursiveDelete = functions
   .region('asia-northeast1')
   .runWith({
     timeoutSeconds: 540,
-    memory: '2GB'
+    memory: '2GB',
   })
   //@ts-ignore
   .https.onCall((data, context) => {
@@ -38,17 +26,16 @@ exports.recursiveDelete = functions
     }
 
     const path = data.path
-    console.log(
-      `User ${context.auth.uid} has requested to delete path ${path}`
-    )
+    console.log(`User ${context.auth.uid} has requested to delete path ${path}`)
 
     return firebaseTools.firestore
       .delete(path, {
         project: process.env.GCLOUD_PROJECT,
         recursive: true,
         yes: true,
-        token: functions.config().fb.token
-      }).then(() => {
+        token: functions.config().fb.token,
+      })
+      .then(() => {
         return { path: path }
       })
   })

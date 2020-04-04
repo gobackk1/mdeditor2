@@ -73,8 +73,6 @@ class NoteStore extends VuexModule implements INoteStore {
   @Mutation UPDATE_NOTE(note: Note): void {
     const index = this.notes.findIndex(n => n.id === note.id)
     Vue.set(this.notes, index, note)
-    // this.notes[index] = note
-    console.log(this.notes[index], 'UPDATE')
   }
 
   @Mutation DELETE_NOTE(noteId: string): void {

@@ -23,7 +23,7 @@ import NoteList from '@/components/NoteList.vue'
 export default class Editor extends Vue {
   public ctrlKeyPressed: boolean = false
 
-  created() {
+  mounted() {
     if (!settingStore.changeFontSizeByWheel) return
 
     document.addEventListener('wheel', this.onMouseWheel)

@@ -25,6 +25,7 @@ button {
 @import './icon';
 @import './theme/dark';
 
+// NOTE: Mixin や PlaceholderSelector が増えてきたら外部へ切り出す
 @mixin font-awesome($unicode, $font-size: 20px, $font-weight: 900) {
   content: unquote('"') + $unicode + unquote('"');
   font-family: 'Font Awesome 5 Free', 'Font Awesome 5 Brands';

@@ -63,8 +63,6 @@ import settingStore, { FontSize, Theme } from '@/store/setting'
 import { Route } from 'vue-router'
 import Checkbox from '@/components/Checkbox.vue'
 
-Component.registerHooks(['beforeRouteEnter', 'beforeRouteLeave'])
-
 @Component({
   components: {
     Checkbox,
@@ -146,8 +144,6 @@ export default class Setting extends Vue {
       height: 30px;
       display: block;
       font-size: 16px;
-    }
-    input {
     }
   }
 }

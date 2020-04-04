@@ -47,9 +47,6 @@
             <li class="menu-list__item" v-if="!isLogin">
               <button class="button--login" @click="onClickLogin" type="button">ログイン</button>
             </li>
-            <!-- <li class="menu-list__item" v-if="isLogin">
-							{{ userName }}
-            </li>-->
             <li class="menu-list__item--img" v-if="isLogin">
               <img :src="photoURL" alt="ユーザーのプロフィール画像" />
             </li>

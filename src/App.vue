@@ -9,9 +9,9 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import AppHeader from '@/components/AppHeader.vue'
-import categoryStore from '@/store/category'
 import settingStore, { Theme } from '@/store/setting'
+import categoryStore from '@/store/category'
+import AppHeader from '@/components/AppHeader.vue'
 import userStore from '@/store/user'
 import noteStore from '@/store/note'
 import { Route } from 'vue-router'
@@ -48,7 +48,6 @@ export default class App extends Vue {
 
         userStore.setLoginUser(user)
         await Promise.all([categoryStore.fetchCategories(), noteStore.fetchNotes()])
-
         eventBus.$emit('ready')
       } else {
         this.$router.push({ name: 'Home' })
@@ -84,8 +83,5 @@ export default class App extends Vue {
     height: calc(100% - #{$header_height});
     overflow-y: scroll;
   }
-}
-
-.theme-dark.app {
 }
 </style>

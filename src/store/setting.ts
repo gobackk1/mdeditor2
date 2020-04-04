@@ -107,6 +107,7 @@ class SettingStore extends VuexModule implements ISettingStore {
     localStorage.setItem('m_font_matter_title_field', title)
     this.SET_FRONT_MATTER_TITLE_FIELD(title)
   }
+
   @Action
   public setChangeFontSizeByWheel(boolean: boolean): void {
     localStorage.setItem('m_change_font_size_by_wheel', boolean.toString())
