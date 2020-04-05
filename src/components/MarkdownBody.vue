@@ -15,8 +15,9 @@ import settingStore from '@/store/setting'
 //TODO: markdown-it系の型
 const MarkdownIt = require('markdown-it')
 const sanitizer = require('markdown-it-sanitizer')
-const footnote = require('markdown-it-footnote')
 const container = require('markdown-it-container')
+const footnote = require('markdown-it-footnote')
+const checkbox = require('markdown-it-checkbox')
 // const mark = require('markdown-it-mark')
 const highlightjs = require('markdown-it-highlightjs')
 
@@ -30,6 +31,7 @@ export default class MarkdownBody extends Vue {
   })
     .use(highlightjs)
     .use(sanitizer)
+    .use(checkbox, { disabled: true })
     .use(footnote)
     .use(container, 'info')
     .use(container, 'success')
