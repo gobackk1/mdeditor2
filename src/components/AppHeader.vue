@@ -47,7 +47,7 @@
             <li class="menu-list__item" v-if="!isLogin">
               <button class="button--login" @click="onClickLogin" type="button">ログイン</button>
             </li>
-            <li class="menu-list__item--img" v-if="isLogin">
+            <li class="menu-list__item--img" v-if="isLogin && loaded">
               <img :src="photoURL" alt="ユーザーのプロフィール画像" />
             </li>
             <li class="menu-list__item" v-if="isLogin">
@@ -80,17 +80,15 @@ export default class AppHeader extends Vue {
   created() {
     firebase.auth().onAuthStateChanged(user => {
       if (!user) return
-      // TODO: photo.jpgの取得に失敗する
-      // const image = new Image()
-      // image.addEventListener(
-      //   'load',
-      //   function fn(this: AppHeader) {
-      //     this.loaded = true
-      //     image.removeEventListener('load', fn)
-      //   }.bind(this)
-      // )
-      // image.src = user.photoURL ? user.photoURL : 'defaultPhotoURL'
-      this.loaded = true
+      const image = new Image()
+      image.addEventListener(
+        'load',
+        function fn(this: AppHeader) {
+          this.loaded = true
+          image.removeEventListener('load', fn)
+        }.bind(this)
+      )
+      image.src = user.photoURL ? user.photoURL : 'defaultPhotoURL'
     })
   }
 
