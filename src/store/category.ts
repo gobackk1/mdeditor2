@@ -8,6 +8,7 @@ import {
 } from 'vuex-module-decorators'
 import userStore from '@/store/user'
 import * as util from '@/util'
+import noteStore from '@/store/note'
 import Category from '@/interface/Category'
 import firebase from 'firebase'
 import store from '@/store/store'
@@ -42,13 +43,21 @@ class CategoryStore extends VuexModule implements ICategoryStore {
     this.categories.splice(index, 1)
   }
 
-  @Action({}) async addCategory(category: Category): Promise<void> {
+  @Action({ rawError: true }) async addCategory(category: Category): Promise<void> {
     if (!userStore.uid) return
 
-    const snapshot = await firebase
-      .firestore()
-      .collection(`users/${userStore.uid}/categories`)
-      .add(category)
+    let snapshot
+    try {
+      snapshot = await firebase
+        .firestore()
+        .collection(`users/${userStore.uid}/categories`)
+        .add(category)
+    } catch (e) {
+      if (e.code === 'permission-denied') {
+        alert('入力値に不備があります')
+      }
+      return
+    }
 
     category.id = snapshot.id
     this.ADD_CATEGORY(category)
@@ -60,12 +69,14 @@ class CategoryStore extends VuexModule implements ICategoryStore {
       .collection(`users/${userStore.uid}/categories`)
       .doc(category.id)
 
-    documentRef.set(
-      {
-        title: category.title,
-      },
-      { merge: true }
-    )
+    documentRef
+      .set(
+        {
+          title: category.title,
+        },
+        { merge: true }
+      )
+      .catch(e => alert(`データの更新に失敗しました。${e}`))
 
     this.UPDATE_CATEGORY(category)
   }
@@ -73,6 +84,7 @@ class CategoryStore extends VuexModule implements ICategoryStore {
   @Action({ rawError: true }) async deleteCategory(categoryId: string): Promise<void> {
     await util.deleteAtPath(`users/${userStore.uid}/categories/${categoryId}`)
     this.DELETE_CATEGORY(categoryId)
+    noteStore.DELETE_NOTES_BY_CATEGORY(categoryId)
   }
 
   @Action({ rawError: true }) async fetchCategories(): Promise<void> {

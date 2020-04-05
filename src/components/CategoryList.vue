@@ -84,6 +84,10 @@ export default class CategoryList extends Vue {
   public onClickButton(): void {
     const title: string | null = prompt('カテゴリ名を入力してください')
     if (!title) return
+    if (title.length > 20) {
+      alert('タイトルは20字以内におさめてください')
+      return
+    }
 
     const category: Category = {
       id: '',

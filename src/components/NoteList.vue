@@ -35,6 +35,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import NoteListItem from '@/components/NoteListItem.vue'
 import settingStore from '@/store/setting'
 import noteStore from '@/store/note'
+import userStore from '@/store/user'
 import eventBus from '@/eventBus'
 import firebase from 'firebase'
 import STATUS from '@/enum/STATUS'
@@ -151,9 +152,12 @@ export default class NoteList extends Vue {
   }
 
   public async onClickButton(): Promise<void> {
+    if (!userStore.isLogin) return
+
     const categoryId = this.$route.params.categoryId
     const note: Note = {
       id: '',
+      author: userStore.uid as string,
       categoryId,
       body: '',
       isFavorite: false,

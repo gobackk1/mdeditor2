@@ -80,7 +80,7 @@ class NoteStore extends VuexModule implements INoteStore {
     this.notes.splice(index, 1)
   }
 
-  @Mutation DELETE_CATEGORY(categoryId: string): void {
+  @Mutation DELETE_NOTES_BY_CATEGORY(categoryId: string): void {
     this.notes.forEach((note, index) => {
       if (note.categoryId === categoryId) {
         this.notes.splice(index, 1)
@@ -119,28 +119,25 @@ class NoteStore extends VuexModule implements INoteStore {
       .collection(`users/${userStore.uid}/categories/${note.categoryId}/notes`)
       .doc()
 
-    documentRef.set({
-      ref: category.ref,
-      ...note,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    })
+    documentRef
+      .set({
+        ref: category.ref,
+        ...note,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .catch(e => alert(`データの更新に失敗しました。${e}`))
 
     return new Promise(resolve => {
       const unstamped = documentRef.onSnapshot(snapshot => {
-        if (
-          !(snapshot.data() as any).updatedAt ||
-          !(snapshot.data() as any).createdAt ||
-          !snapshot.exists
-        )
-          return
+        if (!snapshot.get('createdAt') || !snapshot.get('updatedAt') || !snapshot.exists) return
 
         this.ADD_NOTE({
           ...note,
           id: documentRef.id,
           categoryId: note.categoryId,
-          createdAt: (snapshot.data() as any).createdAt,
-          updatedAt: (snapshot.data() as any).updatedAt,
+          createdAt: snapshot.get('createdAt'),
+          updatedAt: snapshot.get('updatedAt'),
         })
 
         unstamped()
@@ -157,23 +154,25 @@ class NoteStore extends VuexModule implements INoteStore {
       .collection(`users/${userStore.uid}/categories/${note.categoryId}/notes`)
       .doc(note.id)
 
-    documentRef.set(
-      {
-        body: note.body,
-        isFavorite: note.isFavorite,
-        isTrash: note.isTrash,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      },
-      { merge: true }
-    )
+    documentRef
+      .set(
+        {
+          body: note.body,
+          isFavorite: note.isFavorite,
+          isTrash: note.isTrash,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      )
+      .catch(e => alert(`データの更新に失敗しました。${e}`))
 
     return new Promise(resolve => {
       const unstamped = documentRef.onSnapshot(snapshot => {
-        if (!(snapshot.data() as any).updatedAt || !snapshot.exists) return
+        if (!snapshot.get('updatedAt') || !snapshot.exists) return
 
         this.UPDATE_NOTE({
           ...note,
-          updatedAt: (snapshot.data() as any).updatedAt,
+          updatedAt: snapshot.get('updatedAt'),
         })
 
         unstamped()
@@ -196,11 +195,13 @@ class NoteStore extends VuexModule implements INoteStore {
     const snapshot = await firebase
       .firestore()
       .collectionGroup(`notes`)
+      .where('author', '==', userStore.uid)
       .get()
 
     snapshot.forEach(doc => {
       const note: Note = {
         id: doc.id,
+        author: doc.data().author,
         categoryId: doc.data().ref.id,
         body: doc.data().body,
         isFavorite: doc.data().isFavorite,

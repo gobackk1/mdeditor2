@@ -60,7 +60,6 @@ export default class CategoryListItem extends Vue {
       await noteStore.deleteTrash()
     } else {
       await categoryStore.deleteCategory(categoryId)
-      categoryStore.deleteCategory(categoryId)
     }
 
     this.$router.push({ name: 'Editor', params: { categoryId: 'all' } })
@@ -69,6 +68,10 @@ export default class CategoryListItem extends Vue {
   public onClickRenameButton(categoryId: string): void {
     const title = prompt('変更後のカテゴリ名を入力してください')
     if (!title) return
+    if (title.length > 20) {
+      alert('タイトルは20字以内におさめてください')
+      return
+    }
 
     this.category.title = title
     categoryStore.updateCategory(this.category)
